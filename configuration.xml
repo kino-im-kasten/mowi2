@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+
+<Kik>
+    <general>
+        <passwordregex>.*[0-9].*</passwordregex>
+        <defaultnormalprice>2.50</defaultnormalprice>
+        <defaultreducedprice>1.50</defaultreducedprice>
+        <defaultstarttime>20:30</defaultstarttime>
+
+        <defaultjob>
+            <name>Gastro</name>
+            <description></description>
+        </defaultjob>
+
+        <defaultjob>
+            <name>Kasse</name>
+            <description></description>
+        </defaultjob>
+
+        <defaultjob>
+            <name>Vorführer</name>
+            <description></description>
+        </defaultjob>
+
+    </general>
+</Kik>

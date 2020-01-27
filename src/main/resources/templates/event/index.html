@@ -1,0 +1,369 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <title>
+        <th:block th:text="#{movieEvent.overview.allEvents}"/>
+    </title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left"></ul>
+        <div id="content-wrapper">
+
+            <!-- HEADING MOVIEEVENTS -->
+            <div id="archive-header">
+                <div class="row">
+                    <div class="col" id="heading-col0">
+                        <h3 id="content-heading_one" th:text="#{event.title.movieEventOverview}">Filmveranstaltungen</h3>
+                        <!--<a th:href="@{/movieEvents/createMovieEvent/}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- OVERVIEW OF ALL MOVIEEVENTS -->
+
+
+            <!-- FILTERING BY ATTRIBUTES -->
+            <div class="row kik-table-header">
+                <div class="col flex-2">
+                    <th:block th:text="#{movieEvent.details.name}">Name der Filmveranstaltung</th:block>
+                    <a class="fas fa-sort" th:href="@{/movieEvents/(sort=fullyQualifiedName, asc=${sortedBy}=='fullyQualifiedName'?not${asc}:true)}"></a>
+                </div>
+                <div class="col flex-1">
+                    <th:block th:text="#{movieEvent.details.date}">Datum</th:block>
+                    <a class="fas fa-sort" th:href="@{/movieEvents/(sort=odt, asc=${sortedBy}=='odt'?not${asc}:true)}"></a>
+                </div>
+                <div class="col flex-1">
+                    <th:block th:text="#{movieEvent.overview.booking}">Buchung</th:block>
+                    <a class="fas fa-sort" th:href="@{/movieEvents/(sort=booking, asc=${sortedBy}=='booking'?not${asc}:true)}"></a>
+                </div>
+            </div>
+
+            <!-- OVERVIEW OF ALL MOVIEEVENTS -->
+
+            <div class="row" th:each="movieEvent : ${movieEvents}">
+                <div class="kik-card movieEvent contains-thumbnail" th:classappend="${movieEvent.getColour()}">
+                    <!-- FQN & TYPE -->
+                    <div class="row">
+                        <div class="col title">
+                            <div class="d-inline-block">
+                                <!-- THUMBNAIL & DETAILS -->
+                                <a class="thumbnail-link" th:href="@{/movieEvents/details/{id}/(id=${movieEvent.id})}">
+                                    <img class="table-img thumbnail"
+                                         th:src="@{/movies/image/{id}(id=${movieEvent.booking.movie.pictureId})}"
+                                         src="/img/cat.jpg"
+                                         th:alt="#{movieEvent.details.heading}"
+                                         alt="Details"/>
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                            </div>
+                            <div class="d-inline-block">
+                                <a th:href="@{/movieEvents/details/{id}/(id=${movieEvent.id})}">
+                                    <h5 th:text="${movieEvent.fullyQualifiedName}">Name der Filmveranstaltung</h5>
+                                    <p th:text="${movieEvent.typeAsString} + ', ' + ${movieEvent.eventPublicityAsString} + ', ' + ${movieEvent.planningStatusAsString} ">Typ, Öffentlichkeit & Status</p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- DATE & TIME -->
+                        <div class="col">
+                            <p th:text="#{movieEvent.details.dateAndTime}">Datum und Uhrzeit</p>
+                            <p>
+                                <th:block th:text="${{movieEvent.odt}} + ' Uhr'"/>
+                            </p>
+                        </div>
+                        <!-- DURATION -->
+                        <div class="col">
+                            <p th:text="#{movieEvent.details.duration}">Dauer</p>
+                            <p>
+                                <th:block th:text="${{movieEvent.duration}} + ' Minuten'"/>
+                            </p>
+                        </div>
+                        <!-- BOOKING -->
+                        <div class="col">
+                            <a th:href="@{/bookings/booking?id={id}(id=${movieEvent.booking.id})}">
+                                <p th:text="#{movieEvent.overview.booking}">Buchung</p>
+                                <p>
+                                    <th:block th:text="${{movieEvent.booking.overviewDisplayName}}"/>
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- JOBS -->
+                        <div class="col event-col-jobs">
+                            <div class="row event-jobs">
+                                <div class="col" th:each="job : ${movieEvent.getDutyPlan().getAllRoles()}">
+                                    <a th:href="@{/dutyplan/assignme/(jobId=${job.getId()},dpId=${movieEvent.getDutyPlan().getId()},redirectTo=0)}"><h5 th:text="${job.getJobName()}">Job 1</h5></a>
+                                    <div th:if="${job.getWorker()} == null"><p>----</p></div>
+                                    <div th:if="${job.getWorker()} != null"><p th:text="${job.getWorker().getName()}">Name</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- EDIT, TICKETS & DELETE -->
+                    <div class="top-right-floater">
+                        <!-- EDIT DETAILS -->
+                        <a th:href="@{/movieEvents/edit/{id}/?redirectTo=1&movieEventId={id}(id=${movieEvent.id})}">
+                            <button th:title="#{movie.overview.edit}"><i class="fas fa-pen"></i></button>
+                        </a>
+                        <!-- EDIT TICKET NUMBERS -->
+                        <a th:href="@{/movieEvents/tickets/{id}/?redirectTo=1&movieEventId={id}(id=${movieEvent.id})}">
+                            <button><i class="fas fa-ticket-alt"></i></button>
+                        </a>
+
+                        <!-- DUTY-PLAN -->
+                        <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}" method="get" th:action="@{/dutyplan/assign/(redirectTo=0)}">
+                            <input type="hidden" name="dpId" th:value="${movieEvent.getDutyPlan().getId()}"/>
+                            <button th:title="#{dutyPlan.edit}"><i class="fas fa-user-edit"></i></button>
+                        </form>
+                        <form th:if="${#authorization.expression('hasRole(''ORGA'')')}" method="get" th:action="@{/dutyplan/editJob/(redirectTo=0)}">
+                            <input type="hidden" name="dpId" th:value="${movieEvent.getDutyPlan().getId()}"/>
+                            <button th:title="#{dutyPlan.JobsEdit}"><i class="fas fa-calendar"></i></button>
+                        </form>
+
+                        <!-- DELETE -->
+                        <div sec:authorize="hasRole('ORGA')" th:id="'any-modal-caller-' + ${movieEvent.id}">
+                            <p class="init d-none" th:text="0" th:href="@{/movieEvents/delete/{id}/(id=${movieEvent.id})}"></p>
+                            <p class="attr d-none" type="hidden" name="to-delete" th:text="${movieEvent.fullyQualifiedName}"></p>
+                            <button th:title="#{movie.overview.delete}" th:attr="onclick='anyModal(' + ${movieEvent.id} + ')'">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+                <th:block th:switch="${movieEvent.getColour()}">
+                    <th:block th:case="'red'">
+                        <div th:replace="template :: border-tooltip(text=#{event.overview.red})"></div>
+                    </th:block>
+                    <th:block th:case="'orange'">
+                        <div th:replace="template :: border-tooltip(text=#{event.overview.orange})"></div>
+                    </th:block>
+                    <th:block th:case="'green'">
+                        <div th:replace="template :: border-tooltip(text=#{event.overview.green})"></div>
+                    </th:block>
+                    <th:block th:case="*">
+                        <div th:replace="template :: border-tooltip(text=#{event.overview.empty})"></div>
+                    </th:block>
+                </th:block>
+            </div>
+            <br/>
+<!--            -->
+<!--            <div class="row" th:each="movieEvent : ${movieEvents}">-->
+<!--                <div class="kik-card movieEvent contains-thumbnail" th:classappend="${movieEvent.getColour()}">-->
+<!--                    <div class="row">-->
+<!--                        &lt;!&ndash; FQN & TYPE &ndash;&gt;-->
+<!--                        <div class="col title img">-->
+<!--                            <div class="d-inline-block">-->
+<!--                                &lt;!&ndash; THUMBNAIL & DETAILS &ndash;&gt;-->
+<!--                                <a class="thumbnail-link" th:href="@{/movieEvents/details/{id}/(id=${movieEvent.id})}">-->
+<!--                                    <img class="table-img thumbnail"-->
+<!--                                         th:src="@{/movies/image/{id}(id=${movieEvent.booking.movie.pictureId})}"-->
+<!--                                         src="/img/cat.jpg"-->
+<!--                                         th:alt="#{movieEvent.details.heading}"-->
+<!--                                         alt="Details"/>-->
+<!--                                    <i class="fas fa-info-circle"></i>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="d-inline-block">-->
+<!--                                <a th:href="@{/movieEvents/details/{id}/(id=${movieEvent.id})}">-->
+<!--                                    <h5 th:text="${movieEvent.fullyQualifiedName}">Name der Filmveranstaltung</h5>-->
+<!--                                    <p th:text="${movieEvent.typeAsString} + ', ' + ${movieEvent.eventPublicityAsString} + ', ' + ${movieEvent.planningStatusAsString} ">Typ, Öffentlichkeit & Status</p>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; DATE & TIME &ndash;&gt;-->
+<!--                        <div class="col">-->
+<!--                            <p th:text="#{movieEvent.details.dateAndTime}">Datum und Uhrzeit</p>-->
+<!--                            <p>-->
+<!--                                <th:block th:text="${{movieEvent.odt}} + ' Uhr'"/>-->
+<!--                            </p>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; DURATION &ndash;&gt;-->
+<!--                        <div class="col">-->
+<!--                            <p th:text="#{movieEvent.details.duration}">Dauer</p>-->
+<!--                            <p>-->
+<!--                                <th:block th:text="${{movieEvent.duration}} + ' Minuten'"/>-->
+<!--                            </p>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; BOOKING &ndash;&gt;-->
+<!--                        <div class="col">-->
+<!--                            <a th:href="@{/bookings/booking?id={id}(id=${movieEvent.booking.id})}">-->
+<!--                                <p th:text="#{movieEvent.overview.booking}">Buchung</p>-->
+<!--                                <p>-->
+<!--                                    <th:block th:text="${{movieEvent.booking.nameForEventFilter}}"/>-->
+<!--                                </p>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="row">-->
+<!--                        &lt;!&ndash; JOBS &ndash;&gt;-->
+<!--                        <div class="col event-col-jobs">-->
+<!--                            <div class="row event-jobs">-->
+<!--                                <div class="col" th:each="job : ${movieEvent.getDutyPlan().getAllRoles()}">-->
+<!--                                    <a th:href="@{/dutyplan/assignme/(jobId=${job.getId()},dpId=${movieEvent.getDutyPlan().getId()})}"><h5 th:text="${job.getJobName()}">Job 1</h5></a>-->
+<!--                                    <div th:if="${job.getWorker()} == null"><p>&#45;&#45;&#45;&#45;</p></div>-->
+<!--                                    <div th:if="${job.getWorker()} != null"><p th:text="${job.getWorker().getName()}">Name</p></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; EDIT, TICKETS & DELETE &ndash;&gt;-->
+<!--                    <div class="top-right-floater">-->
+<!--                        &lt;!&ndash; EDIT DETAILS &ndash;&gt;-->
+<!--                        <a th:href="@{/movieEvents/edit/{id}/?redirectTo=0&movieEventId={id}(id=${movieEvent.id})}">-->
+<!--                            <button th:title="#{movie.overview.edit}"><i class="fas fa-pen"></i></button>-->
+<!--                        </a>-->
+<!--                        &lt;!&ndash; EDIT TICKET NUMBERS &ndash;&gt;-->
+<!--                        <a th:href="@{/movieEvents/tickets/{id}/?redirectTo=0&movieEventId={id}(id=${movieEvent.id})}">-->
+<!--                            <button><i class="fas fa-ticket-alt"></i></button>-->
+<!--                        </a>-->
+<!--                        &lt;!&ndash; DUTY-PLAN &ndash;&gt;-->
+<!--                        <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}" method="get" th:action="@{/dutyplan/assign/}">-->
+<!--                            <input type="hidden" name="dpId" th:value="${movieEvent.getDutyPlan().getId()}"/>-->
+<!--                            <button th:title="#{dutyPlan.edit}"><i class="fas fa-user-edit"></i></button>-->
+<!--                        </form>-->
+<!--                        <form th:if="${#authorization.expression('hasRole(''ORGA'')')}" method="get" th:action="@{/dutyplan/editJob/}">-->
+<!--                            <input type="hidden" name="dpId" th:value="${movieEvent.getDutyPlan().getId()}"/>-->
+<!--                            <button th:title="#{dutyPlan.JobsEdit}"><i class="fas fa-calendar"></i></button>-->
+<!--                        </form>-->
+
+<!--                        &lt;!&ndash; DELETE &ndash;&gt;-->
+<!--                        <div sec:authorize="hasRole('ORGA')" th:id="'any-modal-caller-' + ${movieEvent.id}">-->
+<!--                            <p class="init d-none" th:text="0" th:href="@{/movieEvents/delete/{id}/(id=${movieEvent.id})}"></p>-->
+<!--                            <p class="attr d-none" type="hidden" name="to-delete" th:text="${movieEvent.fullyQualifiedName}"></p>-->
+<!--                            <button th:title="#{movie.overview.delete}" th:attr="onclick='anyModal(' + ${movieEvent.id} + ')'">-->
+<!--                                <i class="fas fa-trash-alt"></i>-->
+<!--                            </button>-->
+<!--                        </div>-->
+
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <th:block th:switch="${movieEvent.getColour()}">-->
+<!--                    <th:block th:case="'red'"><div th:replace="template :: border-tooltip(text=#{event.overview.red})"></div></th:block>-->
+<!--                    <th:block th:case="'orange'"><div th:replace="template :: border-tooltip(text=#{event.overview.orange})"></div></th:block>-->
+<!--                    <th:block th:case="'green'"><div th:replace="template :: border-tooltip(text=#{event.overview.green})"></div></th:block>-->
+<!--                    <th:block th:case="*"><div th:replace="template :: border-tooltip(text=#{event.overview.empty})"></div></th:block>-->
+<!--                </th:block>-->
+<!--            </div>-->
+
+
+            <!-- HEADING -->
+            <div id="archive-header">
+                <div class="row">
+                    <div class="col" id="heading-col">
+                        <h3 id="content-heading" th:text="#{event.title.specialEventOverview}">Sonderveranstaltungen</h3>
+                        <a th:href="@{/specialEvents/createSpecialEvent/}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OVERVIEW OF ALL SPECIAL EVENTS -->
+            <div class="row" th:each="specialEvent : ${specialEvents}">
+                <div class="row kik-card movieEvent" th:classappend="${specialEvent.getColour()}">
+                    <!-- FQN & TYPE -->
+                    <div class="col title">
+                        <a th:href="@{/specialEvents/details/{id}/(id=${specialEvent.id})}">
+                            <h5 th:text="${specialEvent.fullyQualifiedName}">Name der Veranstaltung</h5>
+                            <p th:text="${specialEvent.typeAsString} + ', ' + ${specialEvent.eventPublicityAsString}">Typ & Öffentlichkeit</p>
+                        </a>
+                    </div>
+                    <!-- DATE & TIME -->
+                    <div class="col">
+                        <p th:text="#{specialEvent.overview.dateAndTime}">Datum und Uhrzeit</p>
+                        <p>
+                            <th:block th:text="${{specialEvent.odt}} + ' Uhr'"/>
+                        </p>
+                    </div>
+                    <!-- EXPECTED END -->
+                    <div class="col">
+                        <p th:text="#{specialEvent.overview.expectedEnd}">Voraussichtliches Ende</p>
+                        <p>
+                            <th:block th:text="${{specialEvent.expectedEnd}} + ' Uhr'"/>
+                        </p>
+                    </div>
+                    <div class="row">
+                        <!-- JOBS -->
+                        <div class="col event-col-jobs">
+                            <div class="row event-jobs">
+                                <div class="col" th:each="job : ${specialEvent.getDutyPlan().getAllRoles()}">
+                                    <a th:href="@{/dutyplan/assignme/(jobId=${job.getId()},dpId=${specialEvent.getDutyPlan().getId()})}"><h5 th:text="${job.getJobName()}">Job 1</h5></a>
+                                    <div th:if="${job.getWorker()} == null"><p>----</p></div>
+                                    <div th:if="${job.getWorker()} != null"><p th:text="${job.getWorker().getName()}">Name</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- EDIT & DELETE -->
+                    <div class="top-right-floater">
+                        <!-- EDIT DETAILS -->
+                        <a th:href="@{/specialEvents/edit/{id}/?redirectTo=0&specialEventId={id}(id=${specialEvent.id})}">
+                            <button th:title="#{movie.overview.edit}"><i class="fas fa-pen"></i></button>
+                        </a>
+                        <!-- DELETE -->
+                        <div sec:authorize="hasRole('ORGA')" th:id="'any-modal-caller-' + ${specialEvent.id}">
+                            <p class="init d-none" th:text="0" th:href="@{/specialEvents/delete/{id}/(id=${specialEvent.id})}"></p>
+                            <p class="attr d-none" type="hidden" name="to-delete" th:text="${specialEvent.fullyQualifiedName}"></p>
+                            <button th:title="#{movie.overview.delete}" th:attr="onclick='anyModal(' + ${specialEvent.id} + ')'">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+
+                        <!-- DUTY-PLAN -->
+                        <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}" method="get" th:action="@{/dutyplan/assign/}">
+                            <input type="hidden" name="dpId" th:value="${specialEvent.getDutyPlan().getId()}"/>
+                            <button th:title="#{dutyPlan.edit}"><i class="fas fa-user-edit"></i></button>
+                        </form>
+                        <form th:if="${#authorization.expression('hasRole(''ORGA'')')}" method="get" th:action="@{/dutyplan/editJob/}">
+                            <input type="hidden" name="dpId" th:value="${specialEvent.getDutyPlan().getId()}"/>
+                            <button  th:title="#{dutyPlan.JobsEdit}"><i class="fas fa-calendar"></i></button>
+                        </form>
+
+
+                    </div>
+                </div>
+                <th:block th:switch="'${specialEvent.getColour()}'">
+                    <th:block th:case="'red'"><div th:replace="template :: border-tooltip(text=#{event.overview.red})"></div></th:block>
+                    <th:block th:case="'orange'"><div th:replace="template :: border-tooltip(text=#{event.overview.orange})"></div></th:block>
+                    <th:block th:case="'green'"><div th:replace="template :: border-tooltip(text=#{event.overview.green})"></div></th:block>
+                    <th:block th:case="*"><div th:replace="template :: border-tooltip(text=#{event.overview.empty})"></div></th:block>
+                </th:block>
+            </div>
+        </div>
+    </div>
+    <div th:replace="template :: any-modal"></div>
+    <div id="modal-helper-0" class="d-none">
+        <div class="modal-title">Event Löschen</div>
+        <div class="modal-body">
+            <p>Du bist gerade dabei eine <b>Veranstaltung</b> zu löschen.</p>
+            <p>Wenn du fortsetzt wird <b class="to-delete"></b> gelöscht.</p>
+        </div>
+        <div class="modal-ok" th:text="#{kik.deletion.delete}"></div>
+        <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+</html>

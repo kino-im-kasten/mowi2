@@ -1,0 +1,115 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left"></ul>
+        <div id="content-wrapper">
+            <div class="container form-container">
+                <form method="post" role="form" class="kik-form" onsubmit="return getContent()" id="form" th:action="@{/createMovie}" th:object="${movieForm}" enctype="multipart/form-data">
+
+                    <div class="form-group">
+                        <label for="germanName" th:text="#{movie.create.title_de}">Deutscher Titel</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('germanName')} ? 'is-invalid'" id="germanName" name="germanName" th:field="*{germanName}" type="text"
+                               required="required"/>
+                        <div class="invalid-feedback" th:errors="*{germanName}">Etwas stimmt mit dem Deutschen Titel nicht!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="originalName" th:text="#{movie.create.title_og}">Originaltitel (optional)</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('originalName')} ? 'is-invalid'" id="originalName" name="originalName" th:field="*{originalName}" type="text"/>
+                        <div class="invalid-feedback" th:errors="*{originalName}">Etwas stimmt mit dem OriginalTitel nicht!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="releaseYear" th:text="#{movie.create.year}">Erscheinungsjahr</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('releaseYear')} ? 'is-invalid'" id="releaseYear" name="releaseYear" th:field="*{releaseYear}" type="number"
+                               required="required"/>
+                        <div class="invalid-feedback" th:errors="*{releaseYear}">Etwas stimmt mit dem Erscheinungsjahr nicht!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regie" th:text="#{movie.create.director}">Regie (optional)</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('regie')} ? 'is-invalid'" id="regie" name="regie" th:field="*{regie}" type="text"/>
+                        <div class="invalid-feedback" th:errors="*{regie}">Etwas stimmt mit der Regie nicht!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descriptionText-div" th:text="#{movie.create.description}">Beschreibung (optional)</label>
+                        <div id="descriptionText-div" class="form-control" th:classappend="${#fields.hasErrors('descriptionText')} ? 'is-invalid'"contenteditable>
+                        </div>
+                        <textarea class="d-none" rows="2" cols="30" id="descriptionText" name="descriptionText" th:field="*{descriptionText}" type="text">
+                        </textarea>
+                        <div class="invalid-feedback" th:errors="*{descriptionText}">Etwas stimmt mit der Beschreibung nicht!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="runTimeInMin" th:text="#{movie.create.runtime}">Laufzeit in Minuten</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('runTimeInMin')} ? 'is-invalid'" id="runTimeInMin" name="runTimeInMin" th:field="*{runTimeInMin}" type="number"
+                               min="0" required="required"/>
+                        <div class="invalid-feedback" th:errors="*{runTimeInMin}">Etwas stimmt mit der Laufzeit nicht!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="trailer" th:text="#{movie.create.trailer}">Trailer Link</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('trailer')} ? 'is-invalid'" id="trailer" name="trailer" th:field="*{trailer}" type="text"/>
+                        <div class="invalid-feedback" th:errors="*{trailer}">Etwas stimmt mit Trailer Link nicht!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="picture" th:text="#{movie.create.picture}">Bild (optional aber maximal 10MB)</label>
+                        <div class="custom-file">
+                            <input class="form-control" th:classappend="${#fields.hasErrors('picture')} ? 'is-invalid'" id="picture" name="picture" th:field="*{picture}" type="file"/>
+                            <label class="custom-file-label" for="picture">Choose file</label>
+                            <div class="invalid-feedback" th:errors="*{picture}">Etwas stimmt mit der Datei nicht!</div>
+                        </div>
+                    </div>
+                    <br/>
+                    <button type="submit" class="btn" th:text="#{movie.create.submit}"></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+        document.getElementById("descriptionText-div").innerText = document.getElementById("descriptionText").value;
+    });
+    function getContent() {
+        document.getElementById("descriptionText").value = document.getElementById("descriptionText-div").innerText;
+    }
+    $('#picture').on('change',function() {
+        var fileName = $(this).val().replace('C:\\fakepath\\', " ");
+        $(this).next('.custom-file-label').html(fileName);
+    })
+</script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

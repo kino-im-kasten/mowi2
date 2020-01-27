@@ -1,0 +1,15 @@
+= {project_name}
+:toc:
+:toclevels: 2
+:showtitle:
+:homepage: https://github.com/st-tu-dresden-praktikum/swt19w4
+:project_name: SWP 2019/20 - Kino im Kasten
+:project_version: 0.9.1
+
+== Preamble
+
+This repository contains the development environment and source-files for the Software Technology Project at the **Technical University of Dresden** for the **Wintersemester 2019 / 2020**. The current version is *{project_version}*.
+
+== Installation
+
+There is a dedicated and detailed file explaining all necessary steps to setup this project. It is located under `/`, i.e. link:INSTALL.md[here].

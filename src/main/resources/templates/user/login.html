@@ -1,0 +1,79 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" class="height-hundred">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/login-style.css" type="text/css" th:href="@{/css/login-style.css}">
+</head>
+
+<body id="index-body" class="height-hundred">
+    <noscript>
+        <div class="row height-hundred" id="login-page-wrapper-noscript">
+            <div id="login-container">
+                <img id="login-logo" src="svgs/logo-programmkino.svg" th:src="@{/svgs/logo-programmkino.svg}">
+
+                <div th:if="${exception?.equals('UserNotFound')}" th:text="#{user.error.no_user_found}" class="alert alert-danger" role="alert"></div>
+
+                <h2 th:text="#{user.login.noscript}">Kein Javascript aktiviert</h2>
+
+                <form id="login-form" method="post" action="/login">
+                    <div th:if="${#session.getAttribute('loginError')}" th:text="#{user.login.login_error}" class="alert alert-danger" role="alert"></div>
+
+                    <input class="form-control login-input" type="text" id="username" name="username" th:placeholder="#{user.login.username_placeholder}">
+                    <input class="form-control login-input" type="password" id="password" name="password"  th:placeholder="#{user.login.password_placeholder}">
+
+                    <button type="submit" class="btn btn-primary" id="login-button">LOGIN</button >
+                </form>
+            </div>
+        </div>
+
+        <style type="text/css">
+            #login-page-wrapper { display: none;}
+        </style>
+    </noscript>
+
+    <div class="row height-hundred" id="login-page-wrapper">
+        <div id="login-container">
+            <img id="login-logo" src="svgs/logo-programmkino.svg" th:src="@{/svgs/logo-programmkino.svg}">
+
+            <div th:if="${exception?.equals('UserNotFound')}" th:text="#{user.error.no_user_found}" class="alert alert-danger" role="alert"></div>
+
+            <form id="login-form" method="post" action="/login" onsubmit="lowerCaseSubmit()">
+                <div th:if="${#session.getAttribute('loginError')}" th:text="#{user.login.login_error}" class="alert alert-danger" role="alert"></div>
+                <input class="form-control login-input" type="text" id="username_fake_input" th:placeholder="#{user.login.username_placeholder}">
+
+                <input class="form-control login-input" type="text" hidden="hidden" id="username" name="username">
+                <input class="form-control login-input" type="password" id="password" name="password"  th:placeholder="#{user.login.password_placeholder}">
+                <button type="submit" class="btn btn-primary" id="login-button">LOGIN</button >
+            </form>
+        </div>
+    </div>
+
+    <footer th:replace="template :: footer"></footer>
+
+    <script>
+        function lowerCaseSubmit(){
+            document.getElementById("username").value = document.getElementById("username_fake_input").value.toLowerCase();
+            return true;
+        }
+    </script>
+
+    <script th:src="@{/webjars/jquery/jquery.min.js}"
+            src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+            src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

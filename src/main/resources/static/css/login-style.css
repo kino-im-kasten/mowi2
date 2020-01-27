@@ -1,0 +1,96 @@
+:root {
+    --main-cw: #FFF;
+    --main-cdg: #333;
+    --main-cg: #666;
+    --main-clg: #d7d7d7;
+    --main-cxlg: #ebebeb;
+    --main-c-acc: #550000;
+    --main-c-g: #48c135;
+    --main-c-o: #ff7b00;
+    --main-c-r: #c90000;
+    cursor: default;
+}
+
+.height-hundred {
+    height: 100%;
+}
+
+#login-body {
+    background-color: var(--main-cw);
+}
+
+#login-page-wrapper {
+    display: table;
+    width: 100%;
+}
+
+#login-container {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    padding: 30px;
+}
+
+#login-logo {
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#login-form {
+    padding: 10px 0;
+}
+
+#login-form > * {
+    margin: 10px auto;
+}
+
+.login-input {
+    border: solid 1px var(--main-clg);
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.login-input:hover {
+    border: solid 1px var(--main-clg);
+}
+
+
+.login-input:hover,
+#login-button:hover {
+    box-shadow: 0 0 10px var(--main-cg);
+    transform: scale(1.02);
+}
+
+.login-input:focus, .login-input:active,
+#login-button:focus, #login-button:active {
+    border: solid 1px var(--main-clg);
+    box-shadow: 0 0 10px var(--main-c-acc);
+    transform: scale(1.02);
+}
+
+#login-button {
+    background-color: var(--main-cdg);
+    color: var(--main-cw);
+    border-radius: 22px;
+    font-weight: bold;
+    border: none;
+    font-size: 15px;
+    padding: 10px 30px 10px 30px;
+    transition: all 0.3s;
+}
+
+#copyright-paragraph {
+    background-color: var(--main-cw);
+    border: none;
+    border-top: solid 1px var(--main-clg);
+    color: var(--main-cg);
+    text-align: center;
+    font-size: 12px;
+    padding: 5px 10px 10px 10px;
+    margin: 0;
+}

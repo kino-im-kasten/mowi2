@@ -1,0 +1,267 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div id="main-wrapper">
+    <!-- NAVIGATION BAR ON TOP OF EVERY SITE -->
+    <nav th:fragment="navbar-top" class="navbar navbar-expand" id="header-navigation">
+
+        <div class="container-fluid">
+            <div class="container" id="header-container-logo">
+                <button id="sidebar-toggle" class="btn btn-primary" type="button" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img id="navbar-logo-big" class="navbar-logo" src="/svgs/logo-programmkino.svg">
+                <img id="navbar-logo-small" class="navbar-logo" src="/svgs/logo-programmkino-small.svg">
+            </div>
+            <noscript class="alert alert-danger" role="alert">
+                <th:block th:text="#{kik.noscript.warning}">Diese Seite benötigt Javascript um zu funktionieren.</th:block>
+            </noscript>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item d-none d-md-block"><a id="user-label" class="nav-link">Eingeloggt als</a></li>
+                    <li class="nav-item">
+                        <div class="dropdown user-dropdown">
+                            <a class="dropdown-toggle nav-link user-dropdown-margin" data-toggle="dropdown" aria-expanded="false" id="user-dropdown-button">
+                                <i class="fas fa-user"></i>
+                                <th:block th:text="${#session.getAttribute('username')}" />
+                            </a>
+                            <div class="dropdown-menu user-dropdown-margin" id="dropdown-menu-user" aria-labelledby="user-dropdown-button">
+                                <a class="dropdown-item" href="/user/details/own">Benutzereinstellungen</a>
+                                <a id="logout-menu-item" class="dropdown-item" href="/logout">Logout&nbsp;<i class="fas fa-power-off"></i></a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div id="middle-wrapper">
+        <!-- NAVIGATION BAR ON THE SITE -->
+        <ul th:fragment="navbar-left" id="nav-sidebar" class="nav flex-column">
+            <script>
+                function toggleSidebar() {
+                    var sidebar = document.getElementById("nav-sidebar");
+                    sidebar.classList.toggle("active");
+                }
+            </script>
+
+            <li class="nav-item">
+                <p class="sidebar-top-buttons">
+                    <b>
+                        <a onclick="goBack()" href="#" class="sidebar-top-button" th:title="#{kik.back-button.tooltip}"><i class="fas fa-arrow-left"></i></a>
+                        &nbsp;
+                        <a onclick="showAllTooltips()" href="#" class="sidebar-top-button" th:title="#{kik.tooltip-button.tooltip}"><i class="fas fa-question-circle"></i></a>
+                    </b>
+                </p>
+                <script>
+                    function goBack() {
+                        window.history.back();
+                    }
+                    function showAllTooltips() {
+                        $('.border-tooltip').tooltip('show');
+                        setTimeout(function(){
+                            $('.border-tooltip').tooltip('hide');
+                        }, 5000);
+                    }
+                </script>
+            </li>
+
+            <li class="nav-item"><a class="nav-link" th:href="@{/}">
+                <i class="far fa-calendar-alt"></i>
+                <th:block th:text="#{kik.sidebar.current_events}" >Aktuelle Veranstaltungen</th:block>
+            </a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/bookings/current}">
+                <i class="fas fa-book"></i>
+                <th:block th:text="#{kik.sidebar.current_bookings}">Aktuelle Buchungen</th:block>
+            </a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/overview}">
+                <i class="fas fa-chart-bar"></i>
+                <th:block th:text="#{kik.sidebar.overview}">Übersicht</th:block>
+            </a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/myJobs/own}">
+                <i class="fas fa-user-clock"></i>
+                <th:block th:text="#{kik.sidebar.my_jobs}">meine Jobs</th:block>
+            </a></li>
+
+            <!------------->
+            <li class="nav-item"><p class="sidebar-heading">Archiv</p></li>
+            <li class="nav-item">
+                <a class="sidebar-add" th:href="@{/createMovie}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                <a class="nav-link" th:href="@{/movies}">
+                    <i class="fas fa-film"></i>
+                    <th:block th:text="#{kik.sidebar.movies}"/>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="sidebar-add" th:href="@{/movieEvents/createMovieEvent/}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                <a class="nav-link" th:href="@{/movieEvents/}">
+                    <i class="fas fa-calendar-day"></i>
+                    <th:block th:text="#{movieEvent.overview.title}"/>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="sidebar-add" th:href="@{/specialEvents/createSpecialEvent/}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                <a class="nav-link" th:href="@{/specialEvents/}">
+                    <i class="fas fa-calendar-day"></i>
+                    <th:block th:text="#{specialEvent.overview.title}"/>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="sidebar-add" th:href="@{/registerDistributor}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                <a class="nav-link" th:href="@{/distributor}">
+                    <i class="fas fa-address-book"></i>
+                    <th:block th:text="#{distributor.overview.distributors}"/>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="sidebar-add" th:href="@{/createBooking}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                <a class="nav-link" th:href="@{/bookings}">
+                    <i class="fas fa-book"></i>
+                    <th:block th:text="#{kik.sidebar.booking}"/>
+                </a>
+            </li>
+
+            <!------------->
+            <li class="nav-item"><p class="sidebar-heading" sec:authorize="hasRole('ADMIN')">Admin</p></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/user}" sec:authorize="hasRole('ADMIN')"><i class="fas fa-id-card"></i><th:block th:text="#{kik.sidebar.user}"/></a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/settings}" sec:authorize="hasRole('ADMIN')"><i class="fas fa-cog"></i><th:block th:text="#{kik.sidebar.settings}"/></a></li>
+
+            <!------------->
+            <li class="nav-item"><p class="sidebar-heading"></p></li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/documentation}">
+                    <i class="fas fa-graduation-cap"></i>
+                    <th:block th:text="#{kik.sidebar.documentation}"/>
+                </a>
+            </li>
+
+        </ul>
+        <div id="content-wrapper">
+
+
+            <div th:fragment="border-tooltip(text)" class="border-tooltip" th:title="${text}" data-toggle="tooltip" data-placement="right" data-delay="500">
+            </div>
+            <!-- <div th:replace="template :: border-tooltip(text='Keine Wichtung')"></div> -->
+
+
+        </div>
+    </div>
+
+    <!-- FOOTER ON EVERY SITE -->
+    <footer th:fragment="footer">
+        <p id="copyright-paragraph">Kino im Kasten&nbsp;© 2019 - <a href="https://www.kino-im-kasten.de/kontakt.html" target="_blank" rel="noopener">Impressum</a></p>
+    </footer>
+</div>
+
+
+<div th:fragment="any-modal" id="any-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-delete-Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">[[[TITEL]]]</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p>[[[MODAL-BODY]]]</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default modal-cancel" data-dismiss="modal">[[[CLOSE-BUTTON]]]</button>
+                <form class="modal-ok-form" method="post">
+                    <button class="btn btn-danger modal-ok">[[[RED-BUTTON]]]</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function anyModal(id) {
+            var modal = $('#any-modal');
+            var modalForm = $('#any-modal-caller-' + id);
+            var modalH = $('#modal-helper-' + modalForm.find('.init').text());
+
+            modal.find('.modal-title').html(modalH.find('.modal-title').html());
+            modal.find('.modal-body').html(modalH.find('.modal-body').html());
+            modal.find('.modal-cancel').html(modalH.find('.modal-cancel').html());
+            modal.find('.modal-ok').html(modalH.find('.modal-ok').html());
+
+            modal.find('.modal-ok-form').attr('action', modalForm.find('.init').attr('href'));
+
+            modalForm.find('.attr').each(function(){
+                modal.find('.' + $(this).attr('name')).html($(this).html());
+            });
+
+            $('#any-modal').modal({ show: true });
+        };
+    </script>
+</div>
+
+<!-- Template für Button mit dazugehörigem container: -->
+        <!-- Es kann wie gewohnt Thymeleaf benutzt werden -->
+        <div th:id="'any-modal-caller-' + '[MODAL_ID/OBJECT_ID]'">
+            <p class="init d-none" th:href="'[LINK]'">[HELPER_ID]</p>
+
+            <p class="attr d-none" type="hidden" name="[NAME_OF_ATTR]">[TEXT_OF_ATTRIBUTE]</p>
+            <p class="attr d-none" type="hidden" name="[NAME_OF_ATTR]">[TEXT_OF_ATTRIBUTE]</p>
+            <!-- ... -->
+
+            <button th:title="'[TITLE]'" th:attr="onclick='anyModal(' + '[MODAL_ID/OBJECT_ID]' + ')'">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+<!------------------------------->
+<!-- anyModal-helper-Template: -->
+
+   <!-- <div th:replace="template :: any-modal"></div> (=> muss auch eingefügt werden aber wird hie auskommentiert)-->
+        <!-- Es können beliebig viele Helper mit beliebig vielen ID's erstellt werden -->
+        <div id="modal-helper-[HELPER_ID]" class="d-none">
+            <div class="modal-title">[MODAL_TITLE]</div>
+            <div class="modal-body">
+                <!-- Hier kann ein beliebig großer HTML-Text eingefügt werden -->
+                <!-- Wenn das attribute class="[name]" benutzt wird, kann der Inhalt verändert werden -->
+                <p>Beliebige Menge an verschachtelten <b>Dingen</b></p>
+                <p>Es können <b class="[NAME_OF_ATTR]"></b> auch Dinge über KlassenNamen eingefügt werden</p>
+            </div>
+            <div class="modal-ok" th:text="#{kik.deletion.delete}"></div>
+            <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+        </div>
+<!------------------------------->
+
+
+
+<!-- SCRIPTS FOR EVERY SITE -->
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script th:fragment="scripts">
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+            <div class="container form-container">
+                <form method="post" role="form" class="kik-form" id="form"
+                      th:action="@{/createBooking}"
+                      th:object="${bookingForm}">
+                    <div class="form-group">
+                        <label th:text="#{booking.create.tbNumber} + ': '">TB-Nummer:</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('tbNumber')}? 'is-invalid'"
+                               id="tbNumber" name="tbNumber" th:field="*{tbNumber}" th:errorclass="fieldError" type="text" required="required"/>
+                        <div class="invalid-feedback" th:errors="*{tbNumber}">Etwas stimmt mit der TB-Nummer nicht.</div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.movie} + ': '">Film:</label>
+                        <select class="form-control" th:classappend="${#fields.hasErrors('movieID')}? 'is-invalid'"
+                                id="movieID" name="movieID" th:field="*{movieID}" th:errorclass="fieldError" required="required">
+                            <option th:each="movieSelected : ${movies}" th:value="${{movieSelected.id}}" th:text="${{movieSelected.germanName}}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{movieID}">Etwas stimmt mit der Film-Id nicht.</div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.distributor} + ': '">Verleiher:</label>
+                        <select class="form-control" th:classappend="${#fields.hasErrors('distributorID')}? 'is-invalid'"
+                                id="distributorID" name="distributorID" th:field="*{distributorID}" th:errorclass="fieldError" required="required">
+                            <option th:each="distributorSelected : ${distributors}" th:value="${{distributorSelected.id}}" th:text="${{distributorSelected.name}}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{distributorID}">Etwas stimmt mit der Verleiher-Id nicht.</div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.startDate} + ': '">Startdatum:</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('startDate')}? 'is-invalid'" id="startDate" name="startDate" th:field="*{startDate}" th:errorclass="fieldError" type="date" required="required"/>
+                        <div class="invalid-feedback" th:errors="*{startDate}">Etwas stimmt mit der Startdatum nicht.</div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.endDate} + ': '">Enddatum:</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('endDate')}? 'is-invalid'" id="endDate" name="endDate" th:field="*{endDate}" th:errorclass="fieldError" type="date" required="required"/>
+                        <div class="invalid-feedback" th:errors="*{endDate}">Etwas stimmt mit dem Enddatum nicht.</div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.minimumGuarantee} + ': '">Mindestgarantie:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" th:text="'€'">€</span>
+                            </div>
+                            <input class="form-control" th:classappend="${#fields.hasErrors('conditions.minimumGuarantee')}? 'is-invalid'" id="minimumGuarantee" name="minimumGuarantee" th:field="*{conditions.minimumGuarantee}" th:errorclass="fieldError" type="number" step=".01" required="required"/>
+                            <div class="invalid-feedback" th:errors="*{conditions.minimumGuarantee}">Etwas stimmt mit der Mindestgarantie nicht.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.percentage} + ': '">Prozentsatz:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" th:text="'%'">%</span>
+                            </div>
+                            <input class="form-control" th:classappend="${#fields.hasErrors('conditions.percentage')}? 'is-invalid'" id="percentage" name="percentage" th:field="*{conditions.percentage}" th:errorclass="fieldError" type="number" step=".01" required="required"/>
+                            <div class="invalid-feedback" th:errors="*{conditions.percentage}">Etwas stimmt mit dem Prozentsatz nicht.</div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <br/>
+                        <h6 th:text="#{booking.create.conditions} + ':'">Weitere Konditionen:</h6>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.freight} + ': '">Fracht:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" th:text="'€'">€</span>
+                            </div>
+                            <input class="form-control" th:classappend="${#fields.hasErrors('conditions.freight')}? 'is-invalid'" id="freight" name="freight" th:field="*{conditions.freight}" th:errorclass="fieldError" type="number" step=".01" required="required"/>
+                            <div class="invalid-feedback" th:errors="*{conditions.freight}">Etwas stimmt mit den Frachtkosten nicht!</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.advertisement} + ': '">Werbung:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" th:text="'€'">€</span>
+                            </div>
+                            <input class="form-control" th:classappend="${#fields.hasErrors('conditions.advertisement')}? 'is-invalid'" id="advertisement" name="advertisement" th:field="*{conditions.advertisement}" th:errorclass="fieldError" type="number" step=".01" required="required"/>
+                            <div class="invalid-feedback" th:errors="*{conditions.advertisement}">Etwas stimmt mit den Werbekosten nicht.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.spio} + ': '">SPIO:</label>
+                        <h6 id="spio_information" style="font-size: 0.8em;">Hinweis: Die SPIO wird erst ab 2 Veranstaltungen fällig.</h6>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" th:text="'€'">€</span>
+                            </div>
+                            <input class="form-control" th:classappend="${#fields.hasErrors('conditions.spio')}? 'is-invalid'" id="spio" name="spio" th:field="*{conditions.spio}" th:errorclass="fieldError" type="number" step=".01" required="required"/>
+                            <div class="invalid-feedback" th:errors="*{conditions.spio}">Etwas stimmt mit den SPIO Kosten nicht.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label th:text="#{booking.create.other} + ': '">Sonstiges:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" th:text="'€'">€</span>
+                            </div>
+                            <input class="form-control" th:classappend="${#fields.hasErrors('conditions.other')}? 'is-invalid'" id="other" name="other" th:field="*{conditions.other}" th:errorclass="fieldError" type="number" step=".01" required="required"/>
+                            <div class="invalid-feedback" th:errors="*{conditions.other}">Etwas stimmt mit den sonstigen Kosten nicht.</div>
+                        </div>
+                    </div>
+                    <br/>
+                    <button type="submit" class="btn" th:text="#{booking.create.submit}">Erstellen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

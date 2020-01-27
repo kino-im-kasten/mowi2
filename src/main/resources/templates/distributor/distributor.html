@@ -1,0 +1,157 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+
+
+
+            <div id="archive-header">
+                <div class="row">
+                    <div class="col" id="heading-col">
+                        <h3 th:text="#{distributor.overview.distributor}"></h3>
+                        <a th:href="@{/registerDistributor}"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <div class="col" id="search-col">
+                        <form method="post" th:action="@{/distributor}">
+                            <p th:if="!${input.isEmpty()}" th:text="'Is filtered with attribute: ' + ${input}"></p>
+                            <a th:if="!${input.isEmpty()}" th:text="Reset" th:href="@{/distributor}"></a>
+                            <input type="text" name="input" th:attr="value = ${input}" th:placeholder="#{distributor.overview.search}">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- LOAD PREVIOUS OR NEXT DISTRIBUTORS -->
+            <div class="row">
+                <div class="col">
+                    <!-- LOAD PREVIOUS -->
+                    <h6>
+                        <th:block th:text="'  '"/>
+                        <a th:href="@{/distributor/?currentDistCount={cdc}&backwards=true&switched={swi}(cdc=${currentDistCount}, swi=!${backwards})}">
+                            <i class="fas fa-angle-double-left"></i>
+                            <th:block th:text="' ' + #{distributor.load.prev}"/>
+                        </a>
+                        <th:block th:text="'  |  '"/>
+                        <!-- LOAD NEXT -->
+                        <a th:href="@{/distributor/?currentDistCount={cdc}&backwards=false&switched={swi}(cdc=${currentDistCount}, swi=${backwards})}">
+                            <th:block th:text="#{distributor.load.next} + ' '"/>
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </h6>
+                </div>
+            </div>
+
+            <h2 th:if="!${deletionError.isEmpty()}" style="color:red" th:text="#{distributor.overview.deletionMessage}"></h2>
+            <div class="row kik-table-header distributor">
+                <div class="col flex-2">
+
+                    <h4 th:text="#{distributor.overview.distributor}"><i class="fas fa-sort"></i></h4>
+                </div>
+                <div class="col">
+                    <h4 th:text="#{distributor.overview.phoneNumber}"><i class="fas fa-sort-down"></i></h4>
+                </div>
+                <div class="col">
+                    <h4 th:text="#{distributor.overview.email}"><i class="fas fa-sort"></i></h4>
+
+                </div>
+
+            </div>
+
+            <h4 th:if="${distributors.isEmpty()}" th:text="#{distributor.overview.noResults}"></h4>
+            <div class="row kik-card distributor" th:each="distributor : ${distributors}">
+                <div class="col title">
+                    <h4><a th:href="@{/distributor/details/{id}(id=${distributor.getId()})}" th:text="${distributor.getName()}">Verleiher</a></h4>
+                </div>
+                <div class="col">
+                    <p th:text="${distributor.getPhoneNumber()}">Telefon</p>
+                </div>
+                <div class="col">
+                    <p th:text="${distributor.getEmail()}">E-Mail</p>
+                </div>
+
+                <div class="top-right-floater">
+                    <form th:action="@{/distributor/edit/{id}(id=${distributor.getId()})}" th:if="${#authorization.expression('hasRole(''ORGA'')')}">
+                        <button th:title="#{distributor.overview.edit}">
+                            <i class="fas fa-pen" ></i>
+                        </button>
+                    </form>
+
+                    <div th:if="${#authorization.expression('hasRole(''ORGA'')')}" th:id="'any-modal-caller-' + ${distributor.getId()}">
+                        <p class="init d-none" th:text="0" th:href="@{/distributor/delete/{id}(id=${distributor.getId()})}"></p>
+                        <p class="attr d-none" type="hidden" name="to-delete" th:text="${distributor.getName()}"></p>
+                        <button th:title="#{distributor.overview.delete}" th:attr="onclick='anyModal(' + ${distributor.getId()} + ')'">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- LOAD PREVIOUS OR NEXT DISTRIBUTORS -->
+            <div class="row">
+                <div class="col">
+                    <!-- LOAD PREVIOUS -->
+                    <h6>
+                        <th:block th:text="'  '"/>
+                        <a th:href="@{/distributor/?currentDistCount={cdc}&backwards=true&switched={swi}(cdc=${currentDistCount}, swi=!${backwards})}">
+                            <i class="fas fa-angle-double-left"></i>
+                            <th:block th:text="' ' + #{distributor.load.prev}"/>
+                        </a>
+                        <th:block th:text="'  |  '"/>
+                        <!-- LOAD NEXT -->
+                        <a th:href="@{/distributor/?currentDistCount={cdc}&backwards=false&switched={swi}(cdc=${currentDistCount}, swi=${backwards})}">
+                            <th:block th:text="#{distributor.load.next} + ' '"/>
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </h6>
+                </div>
+            </div>
+
+            <!-- END -->
+        </div>
+    </div>
+    <div th:replace="template :: any-modal"></div>
+    <div id="modal-helper-0" class="d-none">
+        <div class="modal-title">Verleiher Löschen</div>
+        <div class="modal-body">
+            <p>Du bist gerade dabei einen <b>Verleiher</b> zu löschen.</p>
+            <p>Wenn du fortsetzt wird <b class="to-delete"></b> gelöscht.</p>
+        </div>
+        <div class="modal-ok" th:text="#{kik.deletion.delete}"></div>
+        <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

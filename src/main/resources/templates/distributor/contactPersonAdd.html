@@ -1,0 +1,71 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+
+            <div class="container form-container">
+                <form method="post" role="form" class="kik-form" id="form" th:action="@{/distributor/addContactPerson/{id}(id=${id})}" th:object="${form}" enctype="multipart/form-data">
+
+                    <div class="ui negative message" th:if="${#fields.hasErrors('*')}">
+                        <p>Einige Angaben sind nicht korrekt.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name"  th:text="#{distributor.contactPerson.edit.name}">Name</label>
+                        <input id="name" class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" name="name" th:field="*{name}" type="text" required="required"/><br/>
+                        <div class="invalid-feedback" th:text="#{kik.cannotBeEmpty}">Der Name darf nicht leer sein.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailAddress"  th:text="#{distributor.contactPerson.edit.email}">Email</label>
+                        <input id="emailAddress"  th:classappend="${#fields.hasErrors('emailAddress')} ? 'is-invalid'" class="form-control" name="emailAddress" th:field="*{emailAddress}"  type="text" /><br/>
+                        <div class="invalid-feedback" th:text="#{kik.cannotBeEmpty}">Die Adresse darf nicht leer sein.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber" th:text="#{distributor.contactPerson.edit.telephoneNumber}">Telefonnummer</label>
+                        <input id="phoneNumber"  th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid'" class="form-control" name="phoneNumber" th:field="*{phoneNumber}"  type="text"/><br/>
+                        <div class="invalid-feedback" th:text="#{kik.cannotBeEmpty}">Die Telephone Nummer darf nicht leer sein.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="role" th:text="#{distributor.contactPerson.edit.role}">Rolle</label>
+                        <input id="role"  th:classappend="${#fields.hasErrors('role')} ? 'is-invalid'" class="form-control" name="role" th:field="*{role}"  type="text" /><br/>
+                        <div class="invalid-feedback" th:text="#{kik.cannotBeEmpty}">Die Telephone Nummer darf nicht leer sein.</div>
+                    </div>
+
+                    <button type="submit" class="btn" th:text="#{distributor.create.submit}">SUBMIT</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

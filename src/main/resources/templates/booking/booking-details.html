@@ -1,0 +1,131 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <title>Kino im Kasten</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <img class="thumbnail"  th:src="@{/movies/image/{id}(id=${booking.movie.pictureId})}"/>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{booking.details.movieTitle} + ':'">Filmtitel</h5>
+                    <p th:text="${booking.movie.germanName}">Batman</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{booking.details.tbNumber} + ':'">TB-Nummer</h5>
+                    <p th:text="${booking.tbNumber}">11235813</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{booking.details.distributor} + ':'">Verleih</h5>
+                    <p th:text="${booking.distributor.name}">Hans Hauer</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{booking.details.timeSpan} + ':'">Zeitraum</h5>
+                    <p th:text="${#temporals.format(booking.startDate, 'dd.MM.yyyy')} + ' - ' +
+                        ${#temporals.format(booking.endDate, 'dd.MM.yyyy')}">24.12.2019 - 31.12.2019</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{booking.details.state} + ':'">Status:</h5>
+                    <p th:text="${booking.state}">Aktiv</p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{booking.details.conditions} + ':'">Konditionen:</h5>
+                    <h6 th:text="#{booking.details.minimumGuarantee} + ': '"></h6>
+                    <p th:text="${#numbers.formatDecimal(booking.conditions.minimumGuarantee, 1, 'DEFAULT', 2 ,'DEFAULT')} + '€'">0,00€</p>
+                    <h6 th:text="#{booking.details.percentage} + ': '"></h6>
+                    <p th:text="${#numbers.formatDecimal(booking.conditions.percentage, 1, 'DEFAULT', 2 ,'DEFAULT')} + '%'">0,00%</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{booking.details.further_conditions} + ':'">Konditionen:</h5>
+                    <p th:text="#{booking.details.freight} + ': ' + ${#numbers.formatDecimal(booking.conditions.freight, 1, 'DEFAULT', 2 ,'DEFAULT')} + '€'">0,00€</p>
+                    <p th:text="#{booking.details.advertisement} + ': ' + ${#numbers.formatDecimal(booking.conditions.advertisement, 1, 'DEFAULT', 2 ,'DEFAULT')} + '€'">0,00€</p>
+                    <p th:text="#{booking.details.spio} + ': ' + ${#numbers.formatDecimal(booking.conditions.spio, 1, 'DEFAULT', 2 ,'DEFAULT')} + '€'">0,00€</p>
+                    <p th:text="#{booking.details.other} + ': ' + ${#numbers.formatDecimal(booking.conditions.other, 1, 'DEFAULT', 2 ,'DEFAULT')} + '€'">0,00€</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5>Events: </h5>
+                    <div th:if="${booking.events.size()} > 0">
+                        <table>
+                            <tr>
+                                <td><p th:text="#{booking.details.event.date}">Datum</p></td>
+                                <td><p th:text="#{booking.details.event.normal}">Normal</p></td>
+                                <td><p th:text="#{booking.details.event.reduced}">Ermäßigt</p></td>
+                                <td><p th:text="#{booking.details.event.free}">Freikarten</p></td>
+                            </tr>
+                            <tr th:each="event : ${booking.events}" th:object="${event.tickets}">
+                                <td><a th:text="${#temporals.format(event.date, 'dd.MM.yyyy')}" th:href="@{/movieEvents/details/{id}/(id=${event.id})}">24.12.2019</a></td>
+                                <td><p th:text="*{cardNormalStartNumber == -1}? '/' : *{cardNormalStartNumber} + ' - ' + *{cardNormalEndNumber}">45</p></td>
+                                <td><p th:text="*{cardReducedStartNumber == -1}? '/' : *{cardReducedStartNumber} + ' - ' + *{cardReducedEndNumber}">22</p></td>
+                                <td><p th:text="*{cardFreeAmount == -1}? '/' : *{cardFreeAmount}">15</p></td>
+                            </tr>
+                        </table>
+                        <h6 th:text="#{booking.details.proceeds} + ':'">Netto Erlös: </h6>
+                        <p th:text="${#numbers.formatDecimal(booking.getTotalRevenue(), 1, 'DEFAULT', 2 ,'DEFAULT')} + '€'">100.00€</p>
+                    </div>
+                    <p th:if="${booking.events.size()} == 0">keine verknüpften Events</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <a sec:authorize="hasRole('ORGA')" th:href="@{/bookings/edit(id=${booking.id})}"><p th:text="#{booking.details.edit}">Editieren</p></a>
+
+                    <a th:if="${not booking.isArchived()}" th:href="@{/bookings/settleup(id=${booking.id})}" id="settleUpLink"><p th:text="#{booking.details.abrechnen}">Abrechnen</p></a>
+                    <p th:if="${settleUpError != null}" th:text="#{${settleUpError}}" style="color: red;">Bei der Abrechnung ist ein Fehler aufgetreten.</p>
+
+                    <a th:if="${booking.isSettledUp()}" th:href="@{/generatePDF/(id=${booking.id})}" id="generatePDFLink"><p th:text="#{booking.details.generatePDF}">PDF Generieren</p></a>
+
+                    <a sec:authorize="hasRole('ADMIN')" th:if="${booking.isSettledUp()}" th:href="@{/bookings/undo-settleup(id=${booking.id})}"><p th:text="#{booking.details.undoSettleUp}">Abrechnung rückgängig machen</p></a>
+
+                    <div sec:authorize="hasRole('ORGA')" th:if="${not booking.isArchived()}" th:id="'any-modal-caller-' + ${booking.id}">
+                        <p class="init d-none" th:text="0" th:href="@{/bookings/cancel(id=${booking.id})}"></p>
+                        <p class="attr d-none" type="hidden" name="to-delete" th:text="${booking.movie.germanName} +
+                            ' (' + ${booking.distributor.name} + '; ' + ${#temporals.format(booking.startDate, 'dd.MM.yyyy')} +
+                            ' - ' + ${#temporals.format(booking.endDate, 'dd.MM.yyyy')} + ')' "></p>
+                        <a href="#" th:title="#{booking.details.cancel}" th:attr="onclick='anyModal(' + ${booking.id} + ')'" th:text="#{booking.details.cancel}"></a>
+                    </div>
+                    <p th:if="${cancelError != null}" th:text="#{${cancelError}}" style="color: red;">Bei der Stornierung ist ein Fehler aufgetreten.</p>
+
+                    <a th:if="${booking.isCanceled()}" sec:authorize="hasRole('ADMIN')" th:href="@{/bookings/undoCancel(id=${booking.id})}"><p th:text="#{booking.details.undoCancel}">Stornierung aufheben</p></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="template :: any-modal"></div>
+    <div id="modal-helper-0" class="d-none">
+        <div class="modal-title">Buchung Stornieren</div>
+        <div class="modal-body">
+            <p>Du bist gerade dabei eine <b>Buchung</b> zu stornieren.</p>
+            <p>Wenn du fortsetzt wird <br><b class="to-delete"></b><br> storniert.</p>
+        </div>
+        <div class="modal-ok" th:text="#{booking.details.cancel}"></div>
+        <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

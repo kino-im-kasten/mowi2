@@ -1,0 +1,96 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <img class="thumbnail"  th:src="@{/movies/image/{id}(id=${movie.pictureId})}" src="/img/cat.jpg"/>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movie.create.title_de}">Filmtitel</h5>
+                    <p th:text="${movie.germanName}">Cat</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movie.create.title_og}">Originaltitel</h5>
+                    <p th:text="${movie.originalName}">The Cat</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movie.create.year}">Produktions-Jahr</h5>
+                    <p th:text="${movie.releaseYear}">2000</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movie.create.director}" >Regie</h5>
+                    <p th:text="${movie.regie}">Katze</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movie.create.runtime}">Laufzeit in Minuten</h5>
+                    <p th:text="${movie.runTimeInMin}">200</p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movie.create.description}">Beschreibung</h5>
+                    <p th:text="${movie.descriptionText}">Ein Film über Katzen</p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movie.create.trailer}">Trailer</h5>
+                    <p th:text="${movie.trailer}">www.cat.com</p>
+                </div>
+            </div>
+
+            <div class="container d-flex flex-wrap align-content-start detail-container" sec:authorize="hasRole('ORGA')">
+                <div class="col p-3 m-1">
+                    <a th:title="#{movie.overview.edit}" th:href="@{/movies/edit/{id}(id=${movie.id})}"><p th:text="#{booking.details.edit}">Editieren</p></a>
+                    <div th:if="${movie.linkedEvents.isEmpty()}" th:id="'any-modal-caller-' + ${movie.id}">
+                        <p class="init d-none" th:text="0" th:href="@{/movies/delete/{id}(id=${movie.id})}"></p>
+                        <p class="attr d-none" type="hidden" name="to-delete" th:text="${movie.germanName} + ' (' + ${movie.releaseYear} + ')'"></p>
+                        <a href="#" th:title="#{movie.overview.delete}" th:attr="onclick='anyModal(' + ${movie.id} + ')'">Löschen</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="template :: any-modal"></div>
+    <div id="modal-helper-0" class="d-none">
+        <div class="modal-title">Film Löschen</div>
+        <div class="modal-body">
+            <p>Du bist gerade dabei einen <b>Film</b> zu löschen.</p>
+            <p>Wenn du fortsetzt wird <b class="to-delete"></b> gelöscht.</p>
+        </div>
+        <div class="modal-ok" th:text="#{kik.deletion.delete}"></div>
+        <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

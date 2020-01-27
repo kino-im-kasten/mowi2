@@ -1,0 +1,2263 @@
+= Test-Plan
+
+Dieser Testplan stellt eine vereinfachte Version der IEEE 829-1998 Vorlage dar.
+
+== Einführung
+Dieses Dokument beschreibt den Testplan für das, im Rahmen des Softwarepraktikums der TU-Dresden 2019/20 entstandene,
+Verwaltungssystem des "Kino im Kasten". Dieser Testplan beinhaltet genaue Testfälle für alle Komponenten und legt dar,
+unter welchen Bedingungen die Tests als erfolgreich gelten oder abgebrochen werden müssen. Des weiteren werden auch die
+Testvorraussetzungen definiert.
+
+Der Testplan richtet sich vorallem an das Entwicklungsteam, sowie an den Kunden (das Kino im Kasten).
+
+== Aufbau der Testbezeichner
+
+Die Tests sind nach dem folgenden Schema beannt:
+
+*Art-Klassenname-Bezeichnung-Ergebnis-Nr*
+
+- Art 
+    ** U - Unittest
+    ** I - Integrationstest
+- Bezeichnung
+    ** Eine prägnante beschreibung des Tests
+- Ergebnis
+    ** P - Positiv Test
+    ** N - Negativ Test
+- Nr
+    ** Tests die sich bei der Benennung nicht weiter unterscheiden, bekommen eine neue nummer zugewiesen.
+
+
+Beispiel: 
+
+im Plan: U-MoviePostController-removeMovie-P-1*
+in Java: uMovieGetControllerEditMovieP1()
+
+== Zu testende Funktionalitäten
+
+S.h. Aktzeptanztestfälle
+
+== Nicht zu testende Funktionalitäten
+
+- Bibliotheken von Drittanbietern
+- Methoden ohne Logik (Getter/Setter)
+
+== Herangehensweise
+
+- Klassen werden mit JUnit getestet und Integrationstest nach dem Bottom-Up Prinzip.
+
+== Umgebungsvoraussetzungen
+
+- Die Tests benötigen mehrere Spring Repositories welche beim Start automatisch erzeugt werden und dann durch die Autowire-Funktionalität zur Verfügung stehen.
+- Bei dem Testen der Get/Post-Controller wird über das lokale Netzwerk kommuniziert.
+
+
+== Testfälle
+
+[options="headers", cols="1,1,2,2,2,2"]
+|===
+
+| ID
+| Anwendungsfall
+| Zu testendes Objekt
+| Vorbedingungen
+| Eingabe
+| Ausgabe
+
+| U-MovieEventData-CreateDataAndType-P-1
+| UCD0101
+| MovieEventData
+| Keine
+| Keine
+| MovieEventData-Objekt mit richtigem Typ
+
+| U-MovieEventData-GetterSetter-P-1
+| UCD0101
+| MovieEventData
+| Keine
+| Buchung, Datum und Zeit, Öfentlichkeit, Typ, Namen
+| Korrektes Setzen der Eingaben
+
+| U-MovieEventData-SetWrongType-N-1
+| UCD0101
+| MovieEventData
+| Keine
+| Änderung eines falschen Typs
+| Keine Änderung des Typs
+
+| U-SpecialEventData-CreateDataAndType-P-1
+| UCD0101
+| SpecialEventData
+| Keine
+| Keine
+| SpecialEventData-Objekt mit korrektem Typ
+
+| u-SpecialEventData-GetterAndSetter-P-1
+| UCD0101
+| SpecialEventData
+| Keine
+| Datum, Zeiten, Öffentlichkeit, Typ, Name
+| Korrektes Setzen der Eingaben
+
+| U-SpecialEventData-SetWrongType-N-1
+| UCD0101
+| SpecialEventData
+| Keine
+| Änderung eines falschen Typs
+| Keine Änderung des Typs
+
+| U-MovieEventForm-CreateForm-P-1
+| UCD0101
+| MovieEventForm
+| Keine
+| Name, Datum, Zeit, Buchunsgnummer
+| Korrekt initialisiertes MoviEventForm-Objekt
+
+| U-MovieEventForm-GetterSetter-P-1
+| UCD0101
+| MovieEventForm
+| Keine
+| Buchungsnummer
+| Korrekt verändertes MovieEventForm-Objekt
+
+| U-MovieEventForm-GetterSetter-P-1
+| UCD0101
+| SpecialEventForm
+| Keine
+| Datum, Name, Zeiten, Öffentlichkeit
+| Korrekt gesetzte Eingaben
+
+| U-EventPlanningStatus-ToString-P-1
+| UCD0105
+| EventPlaningStatus (Enum)
+| Keine
+| Keine
+| Korrekt formatierter String
+
+| U-EventType-ToString-P-1
+| UCD0105
+| EventType (Enum)
+| Keine
+| Keine
+| Korrekt formatierter String
+
+| U-EventType-ToType-P-1
+| UCD0101
+| EventType
+| Keine
+| String der dem Enum-Feld entspricht
+| Korrekt assoziierter Enum-Typ
+
+| U-EventPublicity-ToString-P-1
+| UCD0105
+| EventPublicity
+| Keine
+| Keine
+| Korrekt formatierte Ausgabe
+
+| U-EventPublicity-ToType-P-1
+| UCD0101
+| EventPublicity
+| Keine
+| String der dem Enum-Feld entspricht
+| Korrekt assoziierter Enum-Typ
+
+| U-EventManagement-CalculateRedirection-P-1
+| --
+| EventManagement
+| Keine
+| Korrekte redirect-request-parameter
+| Korrekter Redirect-String
+
+| I-MovieEventInitializer-InitMovieEvent-P-1
+| UCD0101
+| MovieEventInitializer
+| Ex existiert eine Buchung
+| Eine korrekte MovieEventForm
+| Ein korrekt initialisiertes MovieEvent
+
+| I-MovieEventInitializer-UpdateMovieEvent-P-1
+| UCD0104
+| MovieEventInitializer
+| Es existieren zwei Buchungen
+| Eine aktualisierte MovieEventForm
+| Ein korrekte aktualisiertes MovieEvent-Objekt
+
+| I-MovieEventInitializer-UpdateEventWrongBookingID-N-1
+| UCD0104
+| MovieEventInitializer
+| Es existiert eine Buchung
+| Eine aktualisierte MovieEventForm mit falscher BookingID
+| Ein korrekt aktualisiertes MoviEvent-Objekt mir alter Booking
+
+| I-MovieEventManagement-CreateMovieEvent-P-1
+| UCD0101
+| MovieEventManagement
+| Es existiert eine Buchung
+| Valide Einträge zu einer MovieEventForm
+| Das MovieEvent wird angelegt, gespeichert und zurückgegeben
+
+| U-MovieEventManagement-DeleteMovieEvent-N-1
+| UCD0102
+| MovieEventManagement
+| Keine
+| Buchungen mit spezifischer Id sollen gelöscht werden
+| Nur Buchungen, deren ID vorhandne ist, werden gelöscht
+
+| I-SpecialEventInitializer-InitSpecialEvent-P-1
+| UCD0101
+| SpecialEventInitializer
+| Keine
+| Eine korrekte SpecialEventForm
+| Ein korrekt initialisiertes SpecialEvent
+
+| I-SpecialEventInitializer-UpdateSpecialEvent-P-1
+| UCD0104
+| SpecialEventInitializer
+| Keine
+| Korrekte SpecialEventForm
+| Ein korrekt aktualisiertes SpecialEvent-Objekt
+
+| I-MovieEventGetController-GetOverview-P-1
+| UCD0105
+| MovieEventGetController
+| Keine
+| Keine
+a|
+- Der Webserver antwortet mit HTTP Status Code 200
+- Es wird eine Liste mit MovieEvents zurückgegeben
+
+| I-MovieEventGetController-CreateMovieEvent-P-1
+| UCD0101
+| MovieEventGetController
+| Eine Buchung existiert
+| Keine
+a|  - Der Webserver antwortet mit HHTP Status Code 200
+    - Es wird eine Liste mit existierenden Buchungen zurückgegeben
+
+| I-MovieEventGetController-Details-P-1
+| UCD0105
+| MovieEventGetController
+| Keine
+| Keine
+a|  - Der Webserver antwortet mit 200
+    - Es werden alle wichtigen Eigenschaften einer Filmveranstaltung angezeigt
+
+| I-MovieEventGetController-EditMovieEvent-P-1
+| UCD0104
+| MovieEventGetController
+| Keine
+| Keine
+a|  - Der Webserver antwortet mit 200
+    - Es werden alle editierbaren Eigenschaften einer Filmveranstaltung preisgegeben
+
+| I-MovieEventGetController-EditTickets-P-1
+| UCD0106
+| MovieEventGetController
+| Keine
+| Keine
+a|  - Der Webserver antwortet mit 200
+    - Es werden die Felder der Tickets angezeigt
+
+| I-MovieEventPostController-FilterMovieEvents-P-1
+| UCD0107
+| MovieEventPostController
+| Es gibt Filme zum Filtern
+|   - Suchstring
+    - Suchdatum
+a|  - Der Webserver antwortet mit 302
+    - alle Events, auf die der Filter passt, werden angezeigt
+
+| I-MovieEventPostController-CreateMovieEvent-P-1
+| UCD0101
+| MovieEventPostController
+| Eine Buchung existiert
+|   - zusätzlicher Name
+    - Datum und Uhrzeit
+    - Auswahl einer Buchung
+a|  - Der Webserver antwortet mit 302
+    - die Filmveranstaltung wird erstellt
+
+| I-MovieEventPostController-CreateMovieEvent-N-1
+| UCD0101
+| MovieEventPostController
+| Eine Buchung existiert
+| Falsches Datum, nicht zur Buchung passend
+a| - Kein neues MovieEvent wird erstellt
+   - Ein redirect kommt auf dieselbe Seite zurück 
+
+| I-MovieEventPostController-EditMovieEvent-P-1
+| UCD0104
+| MovieEventPostController
+| Keine
+|   - möglicherweise andere Daten
+a|  - Der Webserver antwortet mit 302
+    - die Filmveranstaltung wird verändert abgespeichert
+
+| I-MovieEventPostController-EditMovieEvent-N-1
+| UCD0104
+| MovieEventPostController
+| Keine
+| Daten, mit einem Datum, welches nicht mehr zur Buchung passt
+a|  - Redirect (302)
+    - die Filmveranstaltung wird nicht gespeichert und nicht verändert
+
+| I-MovieEventPostController-DeleteMovieEvent-P-1
+| UCD0102
+| MovieEventPostController
+| Keine
+| Keine
+a|  - Der Webserver antwortet mit 302
+    - die gewählte Filmveranstaltung wird gelöscht
+
+| I-MovieEventPostController-EditMovieEventTickets-P-1
+| UCD0106
+| MovieEventPostController, Tickets
+| Keine
+| Eingabe korrekter Ticketnummern für alle Ticketarten
+a|  - Der Webserver antwortet mit 302
+    - die aktualisierten Ticketdaten werden gespeichert
+
+| I-MovieEventPostController-EditMovieEventTickets-N-1
+| UCD0106
+| MovieEventPostController
+| Keine
+| Eingabe mit falscher MovieEventId
+a|  - Landen auf "error" mit 200
+
+| I-MovieEventPostController-EditMovieEventTickets-N-2
+| UCD0106
+| MovieEventPostController
+| Keine
+| Eingabe falscher Ticketnummern
+a|  - Redirect (302)
+    - die neuen Daten werden nicht gespeichert
+
+| I-SpecialEventGetController-GetOverview-P-1
+| UCD0107
+| SpecialEventGetCOntroller
+| Keine
+| Keine
+a|
+- Der Webserver antwortet mit HTTP Status Code 200
+- Es wird eine Liste mit MovieEvents zurückgegeben
+
+| I-SpecialEventGetController-CreateSpecialEvent-P-1
+| UCD0101
+| SpecialEventGetController
+| Keine
+|   - Name
+    - Datum und Uhrzeit
+    - Öffentlichkeit, Typ
+a|  - Der Webserver antwortet mit 302
+    - die Sonderveranstaltung wird erstellt
+
+| I-SpecialEventGetController-Details-P-1
+| UCD0105
+| SpecialEventGetController
+| Keine
+| Keine
+a|  - HTTP::200
+    - Eine Übersichtsseite mit allen Informationen zu einer Sonderveranstaltung
+
+| I-MovieEventGetController-EditSpecialEvent-P-1
+| UCD0104
+| SpecialEventGetController
+| Keine
+| Keine
+a|  - Der Webserver antwortet mit 200
+    - Es werden alle editierbaren Eigenschaften einer Spezialveransatltung preisgegeben
+
+| I-SpecialEventPostController-FilterSpecialEvents-P-1
+| UCD0107
+| SpecialEventPostController
+| Keine
+|   - Suchstring
+    - Suchdatum
+a|  - Der Webserver antwortet mit 302
+    - alle Spezialveranstatungen, auf die der Filter passt, werden angezeigt
+
+| I-SpecialEventPostController-CreateSpecialEvent-P-1
+| UCD0101
+| SpecialEventPostController
+| Keine
+|   - Name, Datum
+    - Daten
+	- Öffentlichkeit, Typ
+a|
+	- 302, Redirect
+	- eine Sonderveranstaltung wird erstellt und gespeichert
+
+| I-SpecialEventPostController-CreateSpecialEvent-N-1
+| UCD0101
+| SpecialEventPostController
+| Keine
+| Ein in der Vergangenheit liegendes Datum wird eingegeben
+a|  - 320, Redirect auf dieselbe Seite
+    - die Sonderveranstaltung wird nicht erstellt und nicht gespeichert
+
+| I-SpecialEventPostController-EditSpecialEvent-P-1
+| UCD0104
+| SpecialEventPostController
+| Die Veranstaltung existiert
+| Korrekte Eingaben zu editierender Felder werden eingegeben
+a|  - 302, Redirect
+	- eine korrekt eränderte Sonderveranstaltung wird gespeichert
+
+| I-SpecialEventPostController-EditSpecialEvent-N-1
+| UCD0104
+| SpecialEventPostController
+| Die Veranstaltung existiert
+| Es wird eine Event-Id übergeben, die keinem Event zugeordnet ist
+a|  - 200, "error"
+	- es wird nichts editiert und nichts gespeichert
+
+| I-SpecialEventPostController-EditSpecialEvent-N-2
+| UCD0104
+| SpecialEventPostController
+| Die Veranstaltung existiert
+| Falsche Eingaben zum Datm / Uhrzeit werden gemacht
+a|  - 302, Redirect auf dieselbe Seite
+	- die Veranstltung wird nicht gespeichert und nicht verändert
+
+| I-IndexGetController-GetOverview-P-1
+| UCD0107
+| IndexGetController
+| Keine
+| Keine
+a|  - 200, "/"
+	- Die aktuellsten (max.) 10 Filmveränstaltungen und (max.) 5 Sonderveranstltungen werden angezeigt
+
+| U-MovieManagement-createMovie-P-1
+| UCD0201
+| MovieManagement
+a|  - Die Datenbanken MovieRepository und PictureRepository existieren.
+    - Die Objekte "picture" und "pictureMult" wurden aus der Datei moposter300.png erstellt 
+a|  - Originaltitel: "original"
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "100"
+    - Bild : noposter300.png
+a|  - Keine Fehler in der Eingabe.
+    - Der Film wurde in der Datenbank angelegt.
+
+| U-MovieManagement-createMovie-N-1
+| UCD0201
+| MovieManagement
+a|  - Die Datenbanken MovieRepository und PictureRepository existieren.
+    - Die Objekte "picture" und "pictureMult" wurden aus der Datei moposter300.png erstellt 
+a|  - Originaltitel: "original"
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "-100"
+    - Bild : noposter300.png
+a|  - Genau 1 Fehler in der Eingabe.
+    - Rückgabe des Fehlers "movie.create.run_time_error"
+    - Rückgabe des Wertes null
+
+| U-MovieManagement-deleteMovie-P-1
+| UCD0202
+| MovieManagement
+a|  - Die Datenbanken MovieRepository und PictureRepository existieren.
+    - Das Objekt "picture" wurde aus der Datei moposter300.png erstellt 
+a|  - Originaltitel: "original"
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "1"
+    - Bild : noposter300.png
+a|  - Der Film wurde aus der Datenbank gelöscht
+    - Methode gibt wahr zurück
+
+
+| U-MovieManagement-deleteMovie-N-1
+| UCD0202
+| MovieManagement
+a|  - Die Datenbanken MovieRepository und PictureRepository existieren.
+    - Das Objekt "picture" wurde aus der Datei moposter300.png erstellt 
+a|  - Originaltitel: "original"
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "1"
+    - Bild : noposter300.png
+    - Dem Film wird ein Event zugeordnet
+|   - Methode gibt Falsch zurück
+    - Der Film wurde nicht gelöscht
+
+| U-MovieManagement-editMovie-P-1
+| UCD0203
+| MovieManagement
+a|  - Die Datenbanken MovieRepository und PictureRepository existieren.
+    - Die Objekte "picture" und "pictureMult" wurden aus der Datei moposter300.png erstellt
+a|  - Originaltitel : "original"
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "1"
+    - Bild : noposter300.png
+    - Dem Film wird ein Event zugeordnet
+
+    - neuer Originaltitel: "¡Hola"
+a|  - Keine Fehler in der Eingabe.
+    - Der Originaltitel wurde überschrieben
+
+| U-MovieManagement-uploadPicture-P-1
+| UCD0204
+| MovieManagement
+a|  - Die Datenbanken MovieRepository und PictureRepository existieren.
+    - Das Objekt "picture" wurde aus der Datei moposter300.png erstellt 
+a|  - Originaltitel : "original"
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "1"
+    - Bild: noposter300.png
+
+    - Neues Bild: batman.jpg
+a|  - Keine Fehler in der Eingabe.
+    - Das zum Film zugehörige Bild in der Datenbank stimmt mit dem neuen Bild überein. 
+
+| U-MovieManagement-uploadPicture-P-1
+| UCD0204
+| MovieManagement
+a|  - Die Datenbanken MovieRepository und PictureRepository existieren.
+    - Das Objekt "picture" wurde aus der Datei moposter300.png erstellt 
+a|  - Originaltitel : "original"
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "1"
+    - Bild: noposter300.png
+
+    - Neue Datei als Bild: unittestfile.txt
+a|  - Genau 1 Fehler in der Eingabe.
+    - Rückgabe des Fehlers "movie.create.file_type_error"
+    
+| U-MovieManagement-GetInitialPicture-N-1
+| - 
+| Das Bild noposter300.png existiert in der Datenbank. 
+| MovieManagement
+|  -
+| Das Bild wurde wiederhergestellt.    
+
+| U-MovieManagement-DeletePictureWithMovie-P-1
+| -
+| -
+| MovieManagement
+a| - Film mit unrelevanten Daten
+   - Ein im Repository einzigartiges Bild
+| Beim löschen des Filmes, wird das Bild mit gelöscht
+
+| U-MovieFilter-SearchName-P-1
+| UCD0205
+| -
+| MovieFilter
+| Suche nach dem Deutschen Namen
+| Ein einziger Film mit dem Namen
+
+| U-MovieValidation-DenyExisting-N-1
+| -
+| -
+| MovieValidation
+a|  - Ein Film mit bestimmten Daten
+    - Eine Form mit den selben Daten des Filmes
+| In den Errors wird die entsprechende Fehlermeldung abgelegt.
+
+| U-MovieValidation-RejectAll-N-1
+| -
+| -
+| MovieValidation
+a|  - Originaltitel : ""
+    - Deutscher Titel: ""
+    - Erscheinungsjahr: "year"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "runtime"
+    - Bild: null
+
+a|  - Zurückweisen des Deutschen Titels
+    - Zurückweisen des Erscheinungsjahres
+    - Zurückweisen der Laufzeit
+
+| U-MovieValidation-RejectAll-N-2
+| -
+| -
+| MovieValidation
+a|  - Originaltitel : null
+    - Deutscher Titel: null
+    - Erscheinungsjahr: "3000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "111111"
+    - Bild: null
+a|  - Zurückweisen des Erscheinungsjahres
+    - Zurückweisen des Deutschen Titels
+    - Zurückweisen der Laufzeit
+
+| U-MoviePostController-createMovie-P-1
+| UCD0201
+| MoviePostController
+| -
+a|  - Originaltitel: eine random uuid
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "1"
+    - Bild : noposter300.png
+a|  - Der Webserver antwortet mit 302
+    - Der Film existiert in der Datenbank
+    - Die Film Attribute stimmen überein
+
+| U-MoviePostController-createMovie-N-1
+| UCD0201
+| MoviePostController
+| -
+a|  - Originaltitel: eine random uuid
+    - Deutscher Titel: "german"
+    - Erscheinungsjahr: "0000"
+    - Regie: "regie"
+    - Beschreibung: "description"
+    - Laufzeit: "-60"
+    - Bild : noposter300.png
+a|  - Der Webserver antwortet mit 200
+    - Auf der Webseite wird der Fehler "movie.create.run_time_error" angezeigt
+
+| U-MoviePostController-removeMovie-P-1
+| UCD0202
+| MoviePostController
+| -
+| Post request an /movies/delete/<id>
+|   - Der Webserver antwortet mit 302
+    - Der Film existiert nicht mehr in der Datenbank
+
+| U-MoviePostController-editMovie-P-1
+| UCD0203
+| MoviePostController
+| -
+a|  - Originaltitel: "😉"  U+1F609 \xF0\x9F\x98\x89" (Utf)
+    - Deutscher Titel: "Test-german"
+    - Erscheinungsjahr: "9999"
+    - Regie: "Test-regie"
+    - Beschreibung: "Test-description"
+    - Laufzeit: "9"
+    - Bild : batman.jpg
+
+a|  - Der Webserver antwortet mit 302
+    - Die Film Attribute stimmen überein
+
+| U-MoviePostController-editMovie-N-1
+| UCD0203
+| MoviePostController
+| -
+a|  - Originaltitel: "Test-originalName"
+    - Deutscher Titel: "Test-german"
+    - Erscheinungsjahr: "9999"
+    - Regie: "Test-regie"
+    - Beschreibung: "Test-description"
+    - Laufzeit: "9"
+    - Bild : unittestfile.txt
+a|  - Der Webserver antwortet mit 200
+    - Die Filmattribute wurden nicht verändert
+    - Auf der Webseite wird der Fehler "movie.edit.file_type_error" angezeigt
+
+
+| U-MoviePostController-overviewSearch-P-1
+| UCD0205
+| MoviePostController
+| -
+| Post request an /movies?input=<uuid>
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt ein Streamable<Movie> zurück
+    - Das Streamable enthält nur ein Objekt
+    - Das eine Objekt ist der Film
+
+| U-MovieGetController-editMovie-P-1
+| UCD0203
+| MovieGetController
+| -
+| Get Request an /movies/edit/<id>
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt ein Movie Objekt zurück
+    - Der Server gibt ein MovieForm Objekt zurück
+    - Die Attribute des Filmes stimmen mit denen der Form überein
+
+| U-MovieGetController-movieOverview-P-1
+| UCD0205
+| MovieGetController
+| -
+| Get Request an /movies
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt ein Streamable<Movie> zurück
+    - Die Anzahl der Objekte im Streamable entspricht der in der Datenbank
+    - Die Movie Objekte im Streamble stimmen mit denen in der Datenbank überein 
+
+| U-MovieGetController-detailsMovie-P-1
+| UCD0205
+| MovieGetController
+| - 
+| Get Request an /movies/details/<id>
+a|   - Der Webserver antwortet mit 200
+    - Der Server gibt ein Movie Objekt zurück
+    - Das angefragte und erhaltene Movie Objekt stimmen überein
+
+| U-MovieGetController-createMovie-P-1
+| UCD0201
+| MovieGetController
+| -
+| Get Request an /createMovie
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt ein MovieForm Objekt zurück
+
+| U-MovieGetController-getPicture-P-1
+| UCD0204
+| MovieGetController
+| -
+| Get Request an /movies/image/<id>
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt ein Bytearray Objekt zurück
+    - Das angefragte und erhaltene Bild stimmen überein
+
+| U-User-UserDefaultConstructorTest-P
+| UCD0301
+| User
+| -
+a|  - userName: "123someusername123456"
+- userAccount: (password = "password123456$$$", name = "123someusername123456")
+- userType: (name = "someuserType123xxx", roles = USER)
+a|  - erstellter User hat status: deleted = false, unlocked = false
+- das passwort stimmt mit "password123456$$$" überein
+- UserType name stimmt überein
+- der UserAccount hat keine rollen (da nicht freigeschaltet)
+
+| U-User-UserApplyDeapplyUserType-P
+| UCD0305
+| User
+| es existiert ein User, welcher nicht freigeschaltet ist
+a|  - funktion applyUserType() wird angewendet, dann erste assertions
+- funktion deapplyUserType() wird angewendet, weitere assertions
+a|  - erste assertions:
+** User ist jetzt unlocked
+** UserAccount hat die Rolle USER
+- weitere assertions:
+** User ist jetzt locked
+** UserAccount hat keine Rollen
+
+| U-AccessRoleManagement-createAccessRolesTest-P
+| UCD0301
+| AccessRoleManagement
+| -
+| alle AccessRoleEnum Instanzen als Strings ("ADMIN", "ORGA", "USER")
+| drei AccessRoles die als SalesPointRole: "ADMIN", "ORGA" und "USER" haben
+
+| U-UserTypeManagement-createUserTypeTest-P
+| UCD0301
+| UserTypeManagement
+| es existiert eine Map die folgende AccessRoles gespeichert hat: "ADMIN", "ORGA", "USER"
+a|  - typeName: "firstUserType", Rolen: "ADMIN", "ORGA", "USER"
+    - typeName: "secondUserType", Rolen: "USER"
+a|  - es existieren 2 UserTypen im UserTypeRepository mit namen: "firstUserType", "secondUserType"
+    - "firstUserType" hat als Rollen: "ADMIN", "ORGA", "USER"
+    - "secondUserType" hat als Rollen: "USER"
+
+| U-UserManagement-createUserTest-P
+| UCD0301
+| UserManagement
+| es existierten die zwei UserTypen "firstUserType", "secondUserType", gespeichert im UserTypeRepository
+| Name: "someUser", userTypName: "firstUserType", Passwort: "somePassword123"
+a|  - es existiert ein User mit dem namen: "someUser" im UserRepository
+    - der Freischaltstatus des Users ist "blockiert" (false)
+    - das Freischaltpasswort des Users ist "somePassword123"
+    - der zum User gehörende UserAccount hat keine Rollen
+    - der zum User gehörende UserAccount hat als Passwort: "somePassword123"
+    - der zum User gehörende UserTyp ist: "firstUserType"
+
+
+| U-UserManagement-safeDeleteByNameTest-P
+| UCD0302
+| UserManagement
+a|  - es existiert ein User mit mit dem Namen "first_someUser123"
+	- er hat den status deleted == false
+	- der UserAccount des Users is freigeschaltet
+| Name: "first_someUser123"
+a|  - es existiert ein User mit dem Namen: "first_someUser123" im UserRepository
+	- der zum User hat den status deleted == true
+	- der UserAccount des Users is blockiert
+
+| U-UserManagement-deleteUserForeverByNameTest-P
+| UCD0302
+| UserManagement
+a|  - es existiert ein User mit mit dem Namen "second_someUser123"
+	- er hat den status deleted == true
+| Name: "second_someUser123"
+| es existiert kein User mehr mit dem Namen: "first_someUser123" im UserRepository
+
+| U-UserManagement-recoverDeletedUserByNameTest-P
+| UCD0302
+| UserManagement
+a|  - es existiert ein User mit mit dem Namen "second_someUser123"
+	- er hat den status deleted == true
+	- der UserAccount des Users ist blockiert
+| Name: "second_someUser123"
+a|  - es existiert ein User mit dem Namen: "second_someUser123" im UserRepository
+	- er hat den status deleted == false
+	- der UserAccount des Users ist freigeschaltet
+
+| U-UserManagement-unlockAccountTest-P
+| UCD0305
+| UserManagement
+a|  - es existiert ein User mit mit dem Namen "first_someUser123"
+	- er hat den status deleted == false und unlocked==false
+	- der UserAccount des Users ist freigeschaltet
+	- das Passwort des UserAccounts ist "first_password123"
+a| 	- UnlockAccountForm mit
+		** Passwort: "second_password123"
+		** Passwort erneut: "second_password123"
+		** UserName: "first_someUser123"
+	- leeres BindException Objekt
+a|  - es existiert ein User mit dem Namen "first_someUser123"
+	- er hat den status deleted == false und unlocked == true
+	- der UserAccount des Users ist freigeschaltet
+	- das Passwort des UserAccount ist "second_password123"
+
+| U-UserManagement-changeUserTypeTest-P
+| UCD0304
+| UserManagement
+a|  - es existierten zwei UserTypen mit Namen "first_someUserType123", "second_someUserType123", gespeichert im UserTypeRepository
+    - es existiert der User "first_someUser123" mit UserTyp "first_someUserType123"
+| Name: "someUser", userTypName: "secondUserType"
+a|  - es existiert ein User mit dem namen: "first_someUser123" im UserRepository
+    - der zum User gehörende UserTyp hat den Namen: "second_someUserType123"
+
+| U-UserManagement-resetPasswordLockedUserTest-P
+| UCD0303
+| UserManagement
+a|  - es existiert ein User mit mit dem Namen "first_someUser123" im UserRepository
+	- er hat den status unlocked == false
+	- das Freischaltpasswort des Users ist "first_password123"
+	- das Passwort des UserAccounts ist "first_password123"
+a| 	- Name: "first_someUser123"
+	- neues Password: "second_password123"
+	- leeres BindException Objekt
+a|  - es existiert ein User mit dem Namen: "first_someUser123" im UserRepository
+	- er hat den status unlocked == false
+	- das Freischaltpasswort des Users ist "second_password123"
+	- das Passwort des UserAccounts ist "second_password123"
+
+| U-UserManagement-resetPasswordUnlockedUserTest-P
+| UCD0303
+| UserManagement
+a|  - es existiert ein User mit mit dem Namen "first_someUser123" im UserRepository
+- er hat den status unlocked == true
+- das Freischaltpasswort des Users ist "first_password123"
+- das Passwort des UserAccounts ist "first_password123"
+a| 	- Name: "first_someUser123"
+- neues Password: "second_password123"
+- leeres BindException Objekt
+a|  - es existiert ein User mit dem Namen: "first_someUser123" im UserRepository
+- er hat den status unlocked == true
+- das Freischaltpasswort des Users ist "first_password123"
+- das Passwort des UserAccounts ist "second_password123"
+
+| U-UserManagement-changeUserNameTest-P
+| UCD0303
+| UserManagement
+| es existiert ein User mit mit dem Namen "first_someUser123" im UserRepository
+a| 	- alter Name: "first_someUser123"
+	- ChanngeUserNameForm mit neuer Name: "third_someUser123"
+	- leeres BindException Objekt
+a|  - es existiert kein User mit dem Namen: "first_someUser123" im UserRepository
+	- es existiert ein User mit Namen: "third_someUser123" im UserRepository
+	- der User mit Namen "third_User123" ist das selbe Objekt wie der User der "first_someUser123" hieß
+
+| U-UserManagement-getCurrentUserTest-P
+| UCD0305
+| UserManagement
+a| 	- eine Authentication mit Namen "firstUserName789" wird immitiert
+	- es existiert ein User mit Namen "firstUserName789"
+| -
+| der User "firstUserName789" wird von der Methode gefunden
+
+| U-UserManagement-getCurrentUserNegativeTest-N
+| UCD0305
+| UserManagement
+a| 	- eine Authentication mit Namen "someNameThatDoesNotExist" wird immitiert
+	- es existiert kein User mit einem solchen Namen
+| -
+|  die Methode gibt ein leeres Optional zuück
+
+| U-UserManagement-invalidateAuthenticationTest-P
+| UCD0304
+| UserManagement
+a| 	- eine Authentication mit Namen "firstUserName789" wird immitiert
+	- die Authentication ist valide
+| -
+|  die Authentication ist nicht mehr valide
+
+| U-UserManagement-refreshCurrentAuthenticationUnlockedUserTest-P
+| UCD0304
+| UserManagement
+a| 	- eine Authentication mit Namen "firstUserName789" und der Rolle: "ADMIN" wird immitiert
+	- die Authentication hat nur die eine Rolle: "ADMIN"
+	- ein User mit Namen "firstUserName789" existiert und hat den status: unlocked == true
+	- der User hat als UserTyp einen der die Rollen: "ORGA", "USER" hat
+| -
+|  die Authentication hat die beiden Rollen "ORGA" und "USER"
+
+| U-UserManagement-refreshCurrentAuthenticationLockedUserTest-P
+| UCD0304
+| UserManagement
+a| 	- eine Authentication mit Namen "firstUserName789" und der Rolle: "ADMIN" wird immitiert
+- die Authentication hat nur die eine Rolle: "ADMIN"
+- ein User mit Namen "firstUserName789" existiert und hat den status: unlocked == false
+- der User hat als UserTyp einen der die Rollen: "ORGA", "USER" hat
+| -
+|  die Authentication hat noch immer als einzige Rolle: "ADMIN"
+
+| U-UserManagement-loginTest-P
+| UCD0305
+| UserManagement
+| eine anonyme Authentication mit nur der Rolle: "ROLE_ANONYMOUS" wird immitiert
+a| 	- PostRequest an: "/login"
+	- Name: "firstusername789" (absichtlich ohne Großbuchstaben)
+	- Passwort: "firstPassword456"
+| 	- HttpStatut: 302
+	- Weiterleitungs Url: "/"
+
+| U-UserManagement-loginNegativeTest-N
+| UCD0305
+| UserManagement
+| eine anonyme Authentication mit nur der Rolle: "ROLE_ANONYMOUS" wird immitiert
+a| 	- PostRequest an: "/login"
+- Name: "invalidusername" (absichtlich ohne Großbuchstaben)
+- Passwort: "invalidPassword"
+| 	- HttpStatut: 302
+- Weiterleitungs Url: "/login/error"
+
+| U-UserManagement-logoutTest-P
+| UCD0306
+| UserManagement
+| eine Authentication mit namen: "firstUserName789" wird immitiert
+| PostRequest an: "/logout"
+| HttpStatut: 302
+
+| U-UserValidation-validateUserNameExistTest-P
+| UCD0301, UCD0304
+| es existiert ein User mit namen "1234SomeUsernAme" im UserRepository
+| UserValidation
+| Namen zur Eingabe: "1234someusername", "1234somEUserNAME", "1234SOMEUSERNAME"
+a| 	- alle Namen führen zum selben Objekt
+	- es wird keine exception geworfen, da der User existert
+
+| U-UserValidation-validateUserNameExistsNegativeTest-N
+| UCD0301, UCD0304
+| UserValidation
+| der User "someusernamethatdoesnotexist123$" existiert nicht
+| Name zur Eingabe: "someusernamethatdoesnotexist123$"
+| eine UserNotFoundException wird geworfen
+
+| U-UserValidation-validateUserTypeNameExistsTest-P
+| UCD0304
+| UserValidation
+| der UserType mit namen "usertype existiert im UserTypeRepository"
+| Name zur Eingabe: "usertype"
+| Es wird keine Exception geworfen
+
+| U-UserValidation-validateUserTypeNameExistsNegativeTest-N
+| UCD0304
+| UserValidation
+| der UserType "someusertypenamethatdoesnotexist123$" exitiert nicht
+| Name zur Eingabe: "someusertypenamethatdoesnotexist123$"
+| eine UserTypeNotFoundException wird geworfen
+
+| U-UserValidation-validateAdminDangerTest-P
+| UCD0302
+| UserValidation
+a| 	- es exitieren vier User, darunter drei mit UserType Admin
+	- einer der Admins ist gelöscht, einer nicht freigeschaltet
+	- nur einer der Admin Accounts ist verwendbar
+| Eingabe User: der verwendbare Admin
+| eine AdminDangerException wird geworfen
+
+| U-UserValidation-validateAdminDangerNegativeTest-P
+| UCD0302
+| UserValidation
+| es exitieren zwei User mit UserType Admin im UserRepository: "1234SomeUsernAme", "1234SomeUsernAme2"
+| Eingabe User: "1234SomeUsernAme", "1234SomeUsernAme2"
+| no exception is thrown
+
+| U-UserValidation-validatePasswordTest-P
+| UCD0301, UCD0303
+| UserValidation
+| der reguläre Ausdruck zur Passwordvalidierung ist auf "123456passwordLikeRegex" gesetzt
+a| 	- passwort: "123456passwordLikeRegex"
+	- errors: ErrorMock Objekt in der Test Klasse
+| keine felder wurden abgelehnt
+
+| U-UserValidation-validatePasswordNegativeTest-N
+| UCD0301, UCD0303
+| UserValidation
+| der reguläre Ausdruck zur Passwordvalidierung ist auf "123456passwordLikeRegex" gesetzt
+a|	- passwort: "incorrectExpression"
+	- errors: ErrorMock Objekt in der Test Klasse
+| das feld "newPassword" wurde abgelehnt
+
+| U-UserValidation-validateTest-N
+| UCD0301, UCD0302, UCD0303, UCD0304
+| UserValidation
+| der reguläre Ausdruck zur Passwordvalidierung ist auf "123456passwordLikeRegex" gesetzt
+a| 	- Liste von mit valider: CreateNewUserForm, ChangeUserTypeOfUserForm, UnlockAccountForm, ChangePasswordForm, ChangeUserNameForm
+	- ErrorMock Objekt
+a| 	- für keine der Formen wird eine exception geworfen
+	- es werden keine Felder abglehnt
+
+| U-UserValidation-validateFieldErrorTest-P
+| UCD0301, UCD0302, UCD0303, UCD0304
+| UserValidation
+a|	- der reguläre Ausdruck zur Passwordvalidierung ist auf "123456passwordLikeRegex" gesetzt
+	- die UserTypen mit Namen "Orga" und "usertype" ohne Rollen existiert im UserTypeRepository
+	- ein User mit Namen "validUser" und UserType "usertype" existiert im UserRepository
+a| 	- eine Liste mit Eingabe Formen und den jeweiligen Namen der Felder, welche abgelehnt werden sollten:
+		** CreateNewUserForm mit Namen der schon existiert, Feldname: "name"
+		** CreateNewUserForm mit unsicherem Passwort, Feldname: "passwort"
+		** UnlockAccountForm Passwort und Passwortbestätigung sind unterschiedlich , Feldname: "newPassword"
+		** UnlockAccountForm mit unsicherem Passwort , Feldname: "newPasswordAgain"
+		** ChangePasswordForm mit Passwort, das nicht dem alten entspricht, Feldname: "oldPassword"
+		** ChangePasswordForm neues Passwort nicht sicher genug, Feldname: "newPassword"
+		** ChangeUserNameForm mit neuem namen der schon existiert, Feldname: "newUserName"
+| jeder der Formen verursacht genau die Ablehnung des einen spezifizierten Feldes
+
+| U-UserGetController-getLoginTest-P
+| UCD0305
+| UserGetController
+| an anonymouser is simulated
+| "/login" get request is performed
+| the returned Http status is 200 ok
+
+| U-UserGetController-getDocumentationTest-P
+| -
+| UserGetController
+| an authenticated User with username "someone" is simulated
+| "/documentaion" get request is performed
+| the returned Http status is 200
+
+| U-UserGetController-userOverviewTest-P
+| UCD0303
+| UserGetController
+a| 	- an user with role "ADMIN" is simulated
+	- there is one deleted User "TestDeletedUser" and three not deleted Users
+| "/user" get request is performed
+a| 	- returned modelmap contains "userList" and "userTypeList"
+	- "userList" is a stream of users, "userTypeList" a stream of userTyps
+	- the stream of users contains the three not deleted Users
+
+| U-UserGetController-userDeletedOverviewTest-P
+| UCD0302
+| UserGetController
+a| 	- an user with role "ADMIN" is simulated
+- there is one deleted User "TestDeletedUser" and three not deleted Users
+| "/user" get request is performed with "showDeletedUsers" session attribute set to true
+a| 	- returned modelmap contains "userList"
+	- "userList" is a stream of users and only contains "TestDeletedUser"
+
+| U-UserGetController-getSearchUserOverviewTest-P
+| -
+| UserGetController
+a|	- an user with role "ADMIN" is simulated
+	- there is one deleted User "TestDeletedUser" and three not deleted Users
+| "/user/TestB" get request is performed
+a| 	- Http return status is 200
+	- the modelmap contains "userList" wich contains only one user: "TestBruce"
+
+| U-UserGetController-getOwnDetailsTest-P
+| UCD0303
+| UserGetController
+a| 	- user with name "TestBruce" is simulated
+	- "TestBruce exists in the userRepository"
+| "/user/details/own" get request is performed
+a| 	- Http return status is 200
+	- the returned modelmap contains "user" object, wich is "TestBruce"
+	- modelmap also contains "changePasswordForm"
+
+| U-UserGetController-getOwnDetailsNegativeTest-N
+| UCD0303
+| UserGetController
+| user with name "userthatdoesnotexisz", and there is no user saved with this name
+| "/user/details/own" get request is performed
+a| 	- Http return status is 302
+	- redirectUrl is "/"
+
+| U-UserGetController-getAnyDetailsTest-P
+| UCD0303
+| UserGetController
+| user with role ADMIN is simulated
+| "/user/details/any/TestAlfred" get request is performed
+a| 	- Http return status is 200
+	- returned modelmap contains "user" witch is "TestAlfred"
+	- modelmap also contains "anyUser" with value: true
+
+| U-UserGetController-getAnyDetailsNegativeTest-N
+| UCD0303
+| UserGetController
+a|  - user with role ADMIN is simulated
+	- there is no user with name "nonexistentuser"
+| "/user/details/any/nonexistentuser" get request is performed
+a|	- Http return status is 302
+	- redirect url is "/user"
+
+| U-UserPostController-createUserTest-P
+| UCD0301
+| UserPostController
+a|	- an user with role ADMIN is simulated
+	- regex for password validation is set to "12341234"
+	- the userType "TestOrga" is saved in the userTypeRepository
+a| 	- "/user/createNewUser" post is performed, with params:
+		** name: "Max"
+		** password: "12341234"
+		** userType: "TestOrga"
+a| 	- Http return status is 302
+	- there is a user in the userRepository present with name "Max"
+	- the user has the userType "TestOrga"
+	- the userAccount of the user has as password one that matches "12341234"
+	- the user has status unlocked==false, and no roles
+
+| U-UserPostController-createUserNegativeTest-N
+| UCD0301
+| UserPostController
+a| 	- an user with role ADMIN is simulated
+	- there is no UserType with name "usertypethatdoesnotexist"
+a|	- "/user/createNewUser" post is performed, with params:
+		** name: "somename"
+		** password: "somepassword"
+		** userType: "usertypethatdoesnotexist"
+a| 	- Http return status is 302
+	- the returned model contains a flash attribute "exception", with value "UserTypeNotFound"
+
+| U-UserPostController-changeUserTypeTest-P
+| UCD0304
+| UserPostController
+a|	- an user with role ADMIN is simulated
+	- an user "TestAlfred" with userType "TestOrga" exists
+	- "TestAlfred" is unlocked and has two roles
+a|	- "/user/changeUserType/" post is performed, with params:
+		** "userTypeName": "TestAdmin"
+		** "userName": "TestAlfred"
+a|	- "TestAlfred" user exists
+	- "TestAlfred" is still unlocked, now has three roles
+
+
+| U-UserPostController-changeUserTypeUserExceptionTest-N
+| UCD0304
+| UserPostController
+a|	- an user with role ADMIN is simulated
+	- there is no user with name "nonexistentusername"
+a|	- "/user/changeUserType/nonexistentusername" post is performed, with parameters:
+		** "UserTypeName": "TestAdmin"
+		** "userName": "nonexistentusername"
+a| 	- Http return status is 302
+	- redirect url is "/user/"
+	- the returned model contains a flash attribute "exception", with value "UserNotFound"
+
+| U-UserPostController-changeUserTypeUserTypeExceptionTest-N
+| UCD0304
+| UserPostController
+a|	- an user with role ADMIN is simulated
+	- there is no userType with name "nonexistentusertype"
+	- an user "TestBruce" exists
+a|	- "/user/changeUserType/TestBruce" post is performed, with parameters:
+		** "UserTypeName": "nonexistentusertype"
+		** "userName": "TestBruce"
+a| 	- Http return status is 302
+	- redirect url is "/user/details/any/TestBruce"
+	- the returned model contains a flash attribute "exception", with value "UserTypeNotFound"
+
+| U-UserPostController-changeUserTypeAdminDangerExceptionTest-P
+| UCD0304
+| UserPostController
+a|	- an user with role ADMIN is simulated
+	- user "TestBruce" exists with userType "Admin"
+a|	- "/user/changeUserType/TestBruce" post is performed, with parameters:
+		** "UserTypeName": "TestAdmin"
+		** "userName": "TestBruce"
+a|	- Http return status is 302
+	- redirect url is "/user/details/any/TestBruce"
+	- the returned model contains a flash attribute "exception", with value "AdminDanger"
+
+| U-UserPostController-unlockAccountOwnTest-P
+| UCD0305
+| UserPostController
+a| 	- an user with name "TestRobin", and no Roles is simulated
+	- the user "TestRobin" is present in userRepository, and has no roles (is locked)
+	- regex for password validation is set to "SomePassword123"
+a|	- "unlockAccount/own" post is performed, with parameters:
+		** "newPassword": "SomePassword123"
+		** "newPasswordAgain": "SomePassword123"
+		** "userName": "TestRobin"
+a| 	- Http return status is 302
+	- "TestRobin" user is present in userRepository and has status unlocked==true
+	- "TestRobin" has more that zero roles
+
+| U-UserPostController-unlockAccountOwnUserExceptionTest-N
+| UCD0305
+| UserPostController
+a| 	- an user with name "nonexistentuser" is simulated
+	- no user named "nonexistentuser" exists in userRepository
+a| 	- "unlockAccount/own" post is performed, with parameters
+		** "newPassword": "SomePassword123"
+		** "newPasswordAgain": "SomePassword123"
+		** "userName": "nonexistentuser"
+a| 	- Http return status is 200
+	- the returned modelmap contains "exception" with value "UserNotFound"
+
+| U-UserPostController-unlockAccountOwnValidationErrorsTest-N
+| UCD0305
+| UserPostController
+a| 	- an user with name "TestBruce" is simulated
+	- regex for password validation is set to "willnotmatch"
+	- the user "TestBruce" exists
+a| 	- "unlockAccount/own" post is performed, with parameters
+		** "newPassword": "SomePassword123"
+		** "newPasswordAgain": "SomePassword123somethingelse"
+		** "userName": "TestBruce"
+a| 	- Http return status is 200
+	- the returned modelmap contains "errors" witch contains Fielderrors: "newPassword", "newPasswordAgain"
+
+| U-UserPostController-safeDeleteTest-P
+| UCD0302
+| UserPostController
+a|	- an user with role "ADMIN" is simulated
+	- the user "TestRobin" exists
+| "/user/delete/TestRobin/confirm" post is performed
+a| 	- Http return status is 302
+	- "TestRobin" is still present and has status: deleted==true
+
+| U-UserPostController-safeDeleteAdminDangerTest-P
+| UCD0302
+| UserPostController
+a|	- an user with role "ADMIN" is simulated
+	- the user "TestBruce" exists and has usertype "Admin"
+| "/user/delete/TestBruce/confirm" post is performed
+a| 	- Http return status is 302
+	- "TestBruce" is still present and has status: deleted==false
+
+| U-UserPostController-deleteForeverTest-P
+| UCD0302
+| UserPostController
+a|	- an user with role "ADMIN" is simulated
+	- the user "TestRobin" exists and has status: deleted==true
+| "/user/delete/TestRobin/confirmForever" post is performed
+a|	- Http return status is 302
+	- there is no user "TestRobin" present in the userRepository
+
+| U-UserPostController-deleteForeverUserExceptionTest-N
+| UCD0302
+| UserPostController
+a|	- an user with role "ADMIN" is simulated
+	- there is no user "nonexistinguser"
+| "/user/delete/nonexistinguser/confirmForever" post is performed
+a|	- Http return status is 302
+	- the returned modelmap contains a flashattribute "exception" with value "UserNotFound"
+
+| U-UserPostController-showDeletedUsersSwitchTest-P
+| UCD0302
+| UserPostController
+| an user with role "ADMIN" is simulated
+| "/user/showDeletedUsers" is performed two times
+a| 	- Http return status is 302 both times
+	- redirect url is "/user" both times
+	- the first time the session attribute becomes true after the post
+	- the second time is becomes null
+
+| U-UserPostController-recoverUserTest-P
+| UCD0302
+| UserPostController
+a|	- an user with role "ADMIN" is simulated
+	- user "TestRobin" exists and has status: deleted==true
+| "/user/recoverUser/TestRobin" post is performed
+a|	- Http return status 302
+	- "TestRobin" still exists, has status: deleted==false
+
+| U-UserPostController-recoverUserExceptionTest-P
+| UCD0302
+| UserPostController
+a|	- an user with role "ADMIN" is simulated
+	- no user named "nonexistinguser" exists
+| "/user/recoverUser/nonexistinguser" post is performed
+a|	- Http return status 302
+	- the returned modelmap contains a flashattribute "exception" with value "UserNotFound"
+
+| U-UserPostController-changeUserNameTest-P
+| UCD0303
+| UserPostController
+| an user with role "ADMIN" is simulated
+a|	- "/user/details/any/TestAlfred/changeUserName" post is performed, with parameters
+		** "newUserName": "newTestAlfred"
+| the returned modelmap contains no flashattribute "errors"
+
+| U-UserPostController-changeUserNameValidationErrorTest-N
+| UCD0303
+| UserPostController
+| an user with role "ADMIN" is simulated
+a|	- "/user/details/any/TestAlfred/changeUserName" post is performed, with parameters
+		** "newUserName": "TestBruce"
+| the returned modelmap contains flashattribute "errors"
+
+| U-UserPostController-changeUserExceptionTest-N
+| UCD0303
+| UserPostController
+| an user with role "ADMIN" is simulated
+a| 	- "/user/details/any/nonexistinguser/changeUserName" post performed, with parameters
+		** "newUserName": "validnewname"
+| the returned modelmap contains "exception" with value "UserNotFound"
+
+| U-UserPostController-changeAdminDangerTest-P
+| UCD0303
+| UserPostController
+a|	- an user with role "ADMIN" is simulated
+	- the User "TestAlfred" exists and has userType "Admin"
+a| 	- "/user/details/any/TestAlfred/changeUserName" is performed, with parameters
+		** "newUserName": "validnewname"
+| the returned modelmap contains flashattribute "exception" with value "AdminDanger"
+
+| U-MOverviewGet-ControllerGetOverview-P-1
+| UCD0601
+| OverviewGetController
+| -
+| Get request an /overview  
+a|  - Eine Liste von OverviewMonth Objekten.
+    - Der Server antwortet mit 200.
+    - Die Anzahl der Objekte stimmt mit denen des Managements überein.
+
+| U-OverviewMonth-GetterTest-P-1
+| UCD0601
+| OverviewMonth
+| -
+a|  - Jahr 2000
+    - Monat Januar
+    - Sales 2.0
+    - Expenses 3.0
+    - Events 1
+    - Filmevents 2
+    - Besucher 3
+    - Normal 4
+    - Reduziert 5
+    - Frei 6
+a|  Daten stimmen mit den vorher gesetzten überein.
+
+| U-OverviewManagement-MonthSwitch-P-1
+| UCD0601
+| OverviewManagement
+| -
+| Die Monate Januar bis Dezember
+| Die Monate werden in die richtigen Strings umgewandelt.
+
+| U-OverviewManagement-MonthSwitch-N-1
+| UCD0601
+| OverviewManagement
+| -
+| null
+| Es wid der String unbekannt zurückgegeben.
+
+| U-OverviewManagement-Rounding-P-1
+| UCD0601
+| OverviewManagement
+| -
+a|  - 1.23456789
+    - 1.5555555
+a|  - 1.235
+    - 1.6
+
+| U-OverviewManagementCreateNewP1
+| UCD0601
+| OverviewMangement
+| Veranstaltungen existieren in dem Repository.
+a|  - Die existierende Übersicht wird gelöscht.
+    - Eine Anfrage eine neue Übersicht zu erstellen.
+|   - Eine neue Übersicht wurde erstellt.
+
+uOverviewManagementRoundingP1
+
+| U-OverviewManagement-OnlyGetRunningEventsTest-P
+| <<UCD0601>>
+| OverviewManagement
+a|  - Das EventManagement existiert (mit EventRepository)
+    - In der Datenbank sind drei Events für den Film "Batman" gespeichert
+    - eines der Events ist bereits vorüber
+| FilterOption: default
+| Iterable der zwei noch laufenden Events.
+
+|  U-OverviewManagement-OnlyGetRunningBookingsTest-P
+| <<UCD0602>>
+| OverviewManagement
+a|  - Das BookingManagement existiert (mit BookingRepository)
+    - In der Datenbank sind drei Buchungen für die Filme "Batman", "Blade Runner 2049", "Joker" gespeichert
+    - Die Buchung für "Joker" ist bereits abgeschlossen
+| FilterOption: default
+| Iterable mit "Batman" und "Blade Runner 2049"
+
+| U-DistributorManager-createDistributor-P-1
+| <<UCD0701>>
+| DistributorManager
+| Benutzer ist authentifizierter Organisator
+|a Name: Fiederl GmbH
+Adresse: Am Bau 24
+Telefonnummer: 03511235463
+Fax: 0351 03511235464
+| Neuer Distributor wird erstellt und im DistributorRepository gespeichert
+
+
+
+
+| U-DistributorManager-createDistributor-N-1
+| <<UCD0701>>
+| DistributorManager
+| Verleiher mit gleichem Namen existiert
+|a Name: Fiederl GmbH
+Adresse: Am Bau 24
+Telefonnummer: 03511235463
+Fax: 0351 03511235464
+| Es wird eine DuplicateException geworfen, da der Distributor bereits existiert
+
+
+
+| U-DistributorManager-editDistributor-P-1
+| <<UCD0702>>
+| DistributorManager
+| Verleiher existiert
+| Adresse: Am Bau 24a, 01309 Dresden
+| Die Adresse des gewählten Distributors wurde geändert
+
+
+| U-DistributorManager-editContactPerson-P-1
+| <<UCD0703>>
+| DistributorManager
+| Verleiher und Kontaktperson existieren
+|a Name: Gustav Krebs
+Telefon: 03511236455
+E-Mail: g.krebs@fiederl.de
+| Die gewählte Kontaktperson des Distributors wird mit den gegebenen Daten aktualisiert
+
+
+| U-DistributorManager-filterDistributorByAttributes
+| <<UCD0704>>
+| DistributorManager
+| Verleiher mit Kontaktpersonen existieren
+| String input "GmbH"
+| Liste mit Verleihern, die "GmbH" enthalten
+
+
+
+| I-DistributorPostController-DistributorSearch-P
+| <<UCD0704>>
+| DistributorPostController
+| Verleiher existieren
+| String input "GmbH"
+| Liste mit Verleihern, die "GmbH" enthalten
+
+| U-DistributorPostController-CreateDistributor-P
+| 
+| DistributorPostController
+| 
+| Ausgefüllte Form für einen Verleiher
+| neuer Verleiher im Repository
+
+| I-DistributorPostController-DistributorEdit-P
+| <<UCD0702>>
+| DistributorPostController
+| Verleiher existieren
+| ausgefüllte Form mit neuen Daten
+| der gewählte Verleiher wird aktualisiert
+
+| U-DistributorPostController-AddContactPerson-P
+| 
+| DistributorPostController
+| Verleiher existieren
+| ausgefüllte Form mit Daten einer Kontaktperson
+| eine neue Kontaktperson wird zum gewählten Verleiher hinzugefügt
+
+| U-DistributorPostController-DistributorDelete-P
+| 
+| DistributorPostController
+| Verleiher existieren
+| POST Request mit der ID des zu löschenden Verleihers
+| der gewählte Verleiher wird gelöscht
+
+| U-DistributorPostController-EditContactPerson-P
+| 
+| DistributorPostController
+| Verleiher existieren
+| ausgefüllte Form mit neuen Daten
+| die gewählte Kontaktperson wird aktualisiert
+
+
+| I-DistributorGetController-DistributorOverview-P
+| 
+| DistributorGetController
+| Verleiher existieren
+| 
+a| - Rückgabe des Templates
+- Liste mit Verleihern ist vollständig
+
+| I-DistributorGetController-DistributorCreate-P
+| 
+| DistributorGetController
+|
+|  
+a| - eine leere Form für neue Verleiher wird zurückgegeben
+
+| I-DistributorGetController-DistributorGetDetails-P
+| 
+| DistributorGetController
+| Verleiher existiert
+| 
+a| - das Template für Details wird korrekt ausgefüllt zurückgegeben
+
+
+
+| U-DistributorGetController-AddContactPerson-P
+| 
+| DistributorGetController
+| Verleiher existiert
+| 
+a| - das Template für das Erstellen einer neuen Kontaktperson wird mit einer leeren Form zurückgegeben
+
+
+| U-DistributorGetController-EditContactPerson-P
+| 
+| DistributorGetController
+| Verleiher existiert
+| 
+a| - das Template für das Bearbeiten wird mit einer korrekt ausgefüllten Form zurückgegeben
+
+
+
+| I-DistributorGetController-RemoveContactPerson-P
+| 
+| DistributorGetController
+| Verleiher existiert
+| 
+a| - die gewählte Kontaktperson wird gelöscht
+
+| I-BookingGetController-showBookings-P
+| UCD0405
+| BookingGetController
+| BookingRepository mit gespeicherten Buchungen existiert
+| Keine
+a| - "booking/bookings" wird zurückgegeben
+- Model hat das nicht-leere Attribut "bookings"
+
+
+| I-BookingGetController-showCurrentBookings-P
+| UCD0405
+| BookingGetController
+| BookingRepository mit gespeicherten Buchungen existiert, von denen eine archiviert und eine nicht archiviert ist
+| Keine
+a| - "booking/current-bookings" wird zurückgegeben
+- Model hat das nicht-leere Attribut "bookings"
+- bookings enthält die archivierte Buchung nicht,
+- bookings enthält die nicht-archivierte Buchung
+
+| I-BookingGetController-showBookingDetails-P
+| UCD0405
+| BookingGetController
+| BookingRepository mit gespeicherten Bunchungen existiert
+| Id: bookingId
+a| - "booking/booking-details" wird zurückgegeben
+- Model hat das Attribut "booking", welche der Buchung mit der eingegebenen Id entspricht
+
+| I-BookingGetController-createBooking-P
+| UCD0401
+| BookingGetController
+| Nutzer als Orga eingeloggt
+| Keine
+a| - "booking/createBooking" wird zurückgegeben
+- Model hat die Attribute "bookingForm", "movies" und "distributors"
+
+| I-BookingGetController-editBooking-P
+| UCD0402
+| BookingGetController
+| BookingRespository mit gespeicherten Buchungen existiert, Nutzer als Orga eingeloggt
+a| - ausgefüllte BookingForm
+   - Id einer existierenden Buchung
+a| - "booking/editBooking" wird zurückgegeben
+- Model hat die Attribute "bookingForm", "booking", "movies" und "distributors"
+- Die Buchung im Model hat die anfangs eingegebene Id
+
+| I-BookingGetController-linkVisibility-P-1
+| UCD0404
+| BookingGetController
+| Eine nicht archivierte Buchung existiert
+| Get request an /booking?id=<id>
+a|  - Der Webserver antwortet mit 200
+- Der Link zum Abrechnen wird angezeigt, der zum PDF-Generieren nicht
+
+
+| I-BookingGetController-linkVisibility-P-2
+| UCD0404
+| BookingGetController
+| Eine archivierte Buchung existiert
+| Get request an /booking?id=<id>
+a|  - Der Webserver antwortet mit 200
+- Der Link zum Abrechnen wird nicht angezeigt, der zum PDF-Generieren schon
+
+
+| I-BookingGetController-settleUp-P
+| UCD0406
+| BookingGetController
+| Eine nicht archivierte Buchung existiert
+| Id der Buchung
+| Die Buchung ist abgerechnet und archiviert
+
+| I-BookingPostController-createBooking-P-1
+| UCD0401
+| BookingPostController
+| Nutzer als Orga eingeloggt
+| - ausgefüllte BookingForm
+a| - "redirect:/bookings/booking" wird zurückgegeben
+- Das BookingRepository enthält eine neue Buchung
+
+| I-BookingPostController-createBooking-P-2
+| UCD0401
+| BookingPostController
+| Nutzer als Orga eingeloggt
+a| - ausgefüllte BookingForm mit:
+* minimumGuarantee: -3
+* percentage: 200
+a| - "redirect:/createBooking" wird zurückgegeben
+- Das BookingRepository enthält keine neue Buchung
+- Die RedirectAttributes haben die zu erwartenden FlashAttributes "bookingForm" and
+"org.springframework.validation.BindingResult.bookingForm"
+
+| I-BookingPostController-editBooking-P-1
+| UCD0402
+| BookingPostController
+| Eine Buchung existiert und ist in dem BookingRepsitory gespeichert, Nutzer als Orga eingeloggt
+a| - Id der Buchung
+- ausgefüllte BookingForm
+a| - "redirect:/bookings/booking" wird zurückgegeben
+- Die Buchungsdaten wurden verändert und abgespeichert
+
+| I-BookingPostController-editBooking-P-2
+| UCD0402
+| BookingPostController
+| Eine Buchung existiert und ist in dem BookingRepsitory gespeichert, Nutzer als Orga eingeloggt
+| - Id der Buchung
+- ausgefüllte BookingForm, wobei die distributorId auf 0 gesetzt ist
+a| - "redirect:/bookings/booking" wird zurückgegeben
+- Der in der Buchung gespeicherte Distributor ist unverändert
+
+| I-BookingPostController-editBooking-P-3
+| UCD0402
+| BookingPostController
+| Eine Buchung existiert und ist in dem BookingRepsitory gespeichert, Nutzer als Orga eingeloggt
+a| - Id der Buchung
+- ausgefüllte BookingForm mit:
+* minimumGuarantee: -3
+* percentage: 200
+a| - "redirect:/bookings/edit" wird zurückgegeben
+- Die Buchung ist unverändert
+- Die RedirectAttributes haben die zu erwartenden FlashAttributes "bookingForm" and
+"org.springframework.validation.BindingResult.bookingForm"
+
+| I-BookingPostController-cancelBooking-P
+| UCD0402
+| BookingPostController
+| Eine nicht archivierte Buchung existiert, Nutzer als Orga eingeloggt
+a| - Id der Buchung
+- MockHttpServletResponse
+- RedirectAttributes
+| Die Buchung ist abgesagt und archiviert, zählt aber nicht als abgerechnet
+
+| I-BookingPostController-filterBookings-P
+| UCD0408
+| BookingPostController
+| BookingRespository existiert und enthält Buchungen
+| leerer String ("")
+a|- "booking/current-bookings" wird zurückgegeben
+- Model hat das nicht-leere Attribut "bookings"
+
+| U-Booking-addEvent-N
+| UCD0402
+| Booking
+| Keine
+| Null
+| IllegalArgumentException
+
+| U-Booking-removeEvent-N
+| UCD0402
+| Booking
+| Keine
+| Null
+| IllegalArgumentException
+
+| U-Booking-addAndRemoveEvent-P
+| UCD0402
+| Booking
+| Keine
+| Event
+| Nach dem Hinzufügen enthält die Buchung das Event, nach dem Entfernen nicht mehr
+
+| U-Booking-getTotalRevenue-P
+| UCD0404
+| Booking
+| Die Buchung hat 2 Events mit eingetragenen Ticketnummern
+| Keine
+| Der berechnete Umsatz ist korrekt
+
+| U-Booking-setState-P
+| UCD0402
+| Booking
+| Die Buchung ist nicht archiviert
+| BookingState: "Abgesagt"
+| Der Buchungsstatus ist "Abgesagt" und die Buchung ist archiviert
+
+| U-Booking-updateState-P-1
+| UCD0402
+| Booking
+| Die Buchung hat den Status "Abgerechnet" und ist archiviert
+| Keine
+| Die Buchung hat immer noch den Status "Abgerechnet"
+
+| U-Booking-updateState-P-2
+| UCD0402
+| Booking
+| Die Buchung hat den Status "Aktiv" und Start- und Enddatum liegen in der Vergangenheit
+| Keine
+| Die Buchung hat den Status "Abgelaufen"
+
+| I-Booking-allEventsSettledUp-P-1
+| UCD0404
+| Booking
+| Buchung ohne Events
+| Keine
+| True
+
+| I-Booking-allEventsSettledUp-P-2
+| UCD0404
+| Booking
+a| - 1: Buchung mit Event ohne Ticketnummern
+- 2: Buchung mit Event mit Ticketnummern
+| Keine
+a| - 1: False
+- 2: True
+
+| I-Booking-getColourString-P
+| UCD0405
+| Booking
+a| - 1: Buchung ohne Status
+- 2: Buchung mit Status "Aktiv"
+- 3: Buchung mit Status "Abgelaufen" und Event ohne Ticketnummern
+- 4: Buchung mit Status "Abgelaufen" und Event mit Ticketnummern
+| Keine
+a| - 1: ""
+- 2: "green"
+- 3: "red"
+- 4: "orange"
+
+| U-ConditionsConverter-convertion-P
+| UCD0401
+| ConditionsConverter
+| Conditions Objekt
+| Die Konditionen
+| Die zu zu einem String und wieder zurück konvertierten Konditionen entsprechen den Ausgangskonditionen
+
+| U-BookingState-toString-P
+| UCD0405
+| Booking
+| Keine
+| Keine
+| Die Stati entsprechen den jeweiligen Strings
+
+| U-BookingFilter-Filter-P-1
+| UCD0408
+| BookingFilter
+| Keine
+a| - Liste von Buchungen
+- Input: "unner"
+| Es wird ein Streamable mit einer Buchung zurückgegeben, welche als Film "Blade Runner 2048" hält
+
+| U-BookingFilter-Filter-P-2
+| UCD0408
+| BookingFilter
+| Keine
+a| - Liste von Buchungen
+- Input: "21"
+| Es wird ein Streamable mit zwei Buchungen zurückgegeben. Eine hat den Verleiher "21Century" und die andere die
+TB-Nummer "32145658"
+
+| U-BookingFilter-Filter-P-3
+| UCD0408
+| BookingFilter
+| Keine
+a| - Liste von Buchungen
+- Input: "eutsch"
+| Es wird ein Streamable mit einer Buchung zurückgegeben, die einen Film mit dem deutschen Titel "Deutscher Titel" hält
+
+| U-BookingInitializer-FillBooking-P-1
+| UCD0401
+| BookingInitializer
+| Keine
+a| * Leere Buchung und ausgefüllte BookingForm:
+- TB-Nummer: "12345678"
+- MovieId
+- DistributorId
+- StartDate: LocalDate.now().plusDays(7)
+- EndDate: LocalDate.now().plusDays(14)
+- Konditionen
+a| - Die Buchung wurde nicht im BookingRepository gespeichert
+- Die Buchung hat alle zu erwartenden Attribute
+- Der Status wurde auf "Anstehend" gesetzt
+
+| U-BookingInitializer-FillBooking-P-2
+| UCD0402
+| BookingInitializer
+| Keine
+a| * Buchung mit gesetzten Attributen und ausgefüllte BookingForm:
+- TB-Nummer: "12345678"
+- MovieId
+- DistributorId
+- StartDate: LocalDate.now().plusDays(7)
+- EndDate: LocalDate.now().plusDays(14)
+- Konditionen
+a| - Die Buchung wurde nicht im BookingRepository gespeichert
+- Die Buchung hat alle zu erwartenden Attribute
+- Der Status wurde auf "Anstehend" gesetzt
+
+| U-BookingInitializer-InitializeBooking-P
+| UCD0401
+| BookingInitializer
+| Keine
+a| * ausgefüllte BookingForm:
+- TB-Nummer: "12345678"
+- MovieId
+- DistributorId
+- StartDate: LocalDate.now().minusDays(3)
+- EndDate: LocalDate.now().plusDays(4)
+- Konditionen
+a|- Die Buchung wurde im BookingRepository gespeichert
+- Die Buchung hat alle zu erwartenden Attribute
+- Der Status wurde auf "Aktiv" gesetzt
+
+| U-BookingValidation-Validate-P-1
+| UCD0401
+| BookingValidation
+| Keine
+a| * ausgefüllte BookingForm:
+- TB-Nummer: "2345"
+- MovieId
+- DistributorId
+- StartDate: LocalDate.of(2019, 12, 24)
+- EndDate: LocalDate.of(2019, 12, 31)
+- Konditionen (minimumGuarantee: 25, percentage: 5)
+| Das Errors Objekt enthält keine Fehler
+
+| U-BookingValidation-Validate-P-2
+| UCD0401
+| BookingValidation
+| Keine
+a| * leere Errors und ausgefüllte BookingForm:
+- TB-Nummer: "-12345"
+- MovieId (keinem Movie zugeordnet)
+- DistributorId (keinem Distributor zugeordnet)
+- StartDate: LocalDate.of(2019, 12, 24)
+- EndDate: LocalDate.of(2019, 12, 31)
+- Konditionen (minimumGuarantee: -25, percentage: 500, freight: -2, advertisement: -2.45f, spio: -3, other: -25.4f)
+| Das Errors Objekt enthält alle zu erwartenden Fehler
+
+| U-BookingManagement-createBooking-P
+| UCD0401
+| BookingManagement
+| Keine
+a| - 1: ausgefüllte valide BookingForm und leere Errors
+- 2: ausgefüllte valide BookingForm und nicht-leere Errors
+a| - 1: Das BookingRepository enthält die neue Buchung
+- 2: Null
+
+| U-BookingManagement-editBooking-P
+| UCD0402
+| BookingManagement
+| Eine Buchung existiert
+a| - 1: Id der Buchung, ausgefüllte valide BookingForm und leere Errors
+- 2: Id der Buchung, ausgefüllte nicht-valide BookingForm und leere Errors
+a| - 1: Die Buchung enthält die neuen Daten
+- 2: Die Buchung ist unverändert
+
+| U-BookingManagement-settleUp-P
+| UCD0406
+| BookingManagement
+| Eine Buchung mit Status "Abgelaufen" und einem nicht abgerechneten Event existiert
+| Id der Buchung
+| Der Status der Buchung ist nun "Abgerechnet" und der Status des verknüpften MovieEvents ist "Abgebucht"
+
+| U-BookingManagement-cancelBooking-P
+| UCD0402
+| BookingManagement
+| Eine nicht-abgesagte Buchung existiert
+a| - Id der Buchung
+- MochHttpServletResponse
+| Der Status der Buchung ist nun "Abgesagt"
+
+| U-BookingManagement-undoCancelBooking-P
+| UCD0402
+| BookingManagement
+| Eine Buchung mit Status "Abgesagt" existiert, deren Buchungszeitraum abgelaufen ist
+| Id der Buchung
+| Der Status der Buchung ist nun "Abgelaufen"
+
+| U-BookingManagement-fillBookingForm-N
+| UCD0402
+| BookingManagement
+| Keine
+| Null
+| IllegalArgumentException
+
+| U-BookingManagement-updateBookingStates-P
+| UCD0402
+| BookingManagement
+| BookingRepository mit einer Buchung, die den Status "Aktiv" hat, obwohl der Buchungszeitraum vergangen ist
+| Keine
+| Die Buchung hat nun den Status "Abgelaufen"
+
+| U-BookingManagement-getAllBookings-P
+| UCD0405
+| BookingManagement
+| BookingRepository mit mehreren gespeicherten Buchungen existiert
+| Keine
+| Das zurückgegebene Streamable hat alle Elemente des BookingRepositories
+
+| U-BookingManagement-getAllBookingsSorted-P
+| UCD0405
+| BookingManagement
+| BookingRepository mit mehreren gespeicherten Buchungen existiert
+a| * Sort Objekt mit:
+- SortDirection: ascending
+- SortAttribute: "tbNumber"
+| Das zurückgegebene Streamable hat alle Elemente des BookingRepositories in der gewünschten Reihenfolge
+
+| U-BookingManagement-getById-P
+| UCD0405
+| BookingManagement
+| BookingRepository mit mehreren gespeicherten Buchungen existiert
+| Id einer Buchung
+| Das zurückgegebene Optional hält die Buchung mit der eingegebenen Id
+
+| U-BookingManagement-getAllNotArchivedBookings-P
+| UCD0405
+| BookingManagement
+| BookingRepository mit mehreren gespeicherten Buchungen existiert
+| Keine
+| Das zurückgegebene Streamable hat alle Elemente des BookingRepositories, die nicht archiviert sind
+
+| U-BookingManagement-getAllNotArchivedBookingsSorted-P
+| UCD0405
+| BookingManagement
+| BookingRepository mit mehreren gespeicherten Buchungen existiert
+a| * Sort Objekt mit:
+- SortDirection: ascending
+- SortAttribute: "tbNumber"
+| Das zurückgegebene Streamable hat alle nicht-archivierten Buchungen des BookingRepositories in der gewünschten Reihenfolge
+
+
+| U-DutyPlanManagementClearJobTestP
+| 
+| DutyPlanManagement
+| Der DutyPlan existiert
+| Löschen eines Events
+| die Jobs werden aus dem Repository und aus dem DutyPlan gelöscht
+
+| U-DutyPlanManagementCreateDutyPlanTestP
+| 
+| DutyPlanManagement
+| 
+| Erstellen eines Events
+| ein DutyPlan wird erstellt und gespeichert
+
+
+| U-DutyPlanManagementInitDutyPlanTestP
+| 
+| DutyPlanManagement
+| DutyPlan existiert
+| Erstellen eines Events
+| ein DutyPlan wird mit den StandartJobs Initialisiert
+
+| U-DutyPlanManagementEventDutyPlanTestP
+| 
+| DutyPlanManagement
+| Buchung existiert
+| Erstellen eines Events
+| das Event wird erstellt und der Dutyplan initialisiert
+
+
+| U-DutyPlanManagementCreateJobTestP
+| 
+| DutyPlanManagement
+| DutyPlan existiert
+| Erstellen eines Jobs
+| der Job wird dem DutyPlan hinzugefügt
+
+| U-DutyPlanManagementRemoveJobP
+| 
+| DutyPlanManagement
+| Job existiert
+| Klick als Admin auf Job löschen
+| der Job wird aus dem DutyPlan entfernt
+
+
+| U-DutyPlanManagementTestEditJobP
+| 
+| DutyPlanManagement
+| Job existiert
+| Klick auf Job editieren, korrekte Daten
+| der Job wird aktualisiert
+
+| U-DutyPlanManagementTestGetFilteredDutyPlansP
+| 
+| DutyPlanManagement
+| DutyPlans existieren
+| Suche nach "Coffee"
+| DutyPlans, die "Coffee" als Job oder Name haben, werden angezeigt, kein anderer
+
+
+| U-DutyPlanManagementTestSignOutFromDutyPlanP
+| 
+| DutyPlanManagement
+| Jobs existieren, User ist eingeschrieben
+| SKlick aus "Aus DutyPlan austragen"
+| User wird aus allen Jobs im DutyPlan ausgetragen
+
+| U-DutyPlanManagementTestUpdateP
+| 
+| DutyPlanManagement
+| DutyPlan existiert
+| Veränderung des DutyPlans
+| der DutyPlan wird korrekt im Repository gespeichert
+
+| U-DutyPlanManagementTestDeleteP
+| 
+| DutyPlanManagement
+| DutyPlan existiert
+| Löschen des Events
+| der DutyPlan wird aus dem Repository gelöscht
+
+
+| I-DutyPlanGetControllerAssignTestP
+| <<UCD0501>>
+| DutyPlanGetController
+| Job "Kartenverkäufer" ist frei, User ist Admin
+| Auswahl des Einschreibemenus
+| Rückgabe der offenen Jobs des Dienstplans und der User
+
+| I-DutyPlanGetControllerAssignTestN
+| <<UCD0501>>
+| DutyPlanGetController
+| User ist kein Admin
+| Auswahl des Einschreibemenus
+| Fehler 503, da der User nicht die nötigen Rechte hat
+
+| I-DutyPlanGetControllerAssignUnAssignUserP
+| <<UCD0502>>
+| DutyPlanGetController
+| Jobs des Events sind belegt und User ist Admin
+| Klick bei Kartenverkäufer auf Austragen
+| der vorher eingetragene User wird ausgetragen
+
+| I-DutyPlanGetControllerAssignUnAssignUserN
+| <<UCD0502>>
+| DutyPlanGetController
+| Jobs des Events sind belegt und User ist kein Admin
+| Klick bei Kartenverkäufer auf Austragen
+| der vorher eingetragene User wird nicht ausgetragen, wenn es nicht der User selbst ist
+
+
+| I-DutyPlanGetControllerAssignMeTestP
+| <<UCD0503>>
+| DutyPlanGetController
+| freier Job existiert
+| Klick auf freien Job
+| User wird eingetragen
+
+| I-DutyPlanGetControllerUnAssignMeTestP
+| <<UCD0503>>
+| DutyPlanGetController
+| User ist in Job eingetragen
+| Klick auf den Job
+| User wird ausgetragen
+
+| I-DutyPlanGetControllerNewJobTestP
+| <<UCD0503>>
+| DutyPlanGetController
+| DutyPlan existiert
+| im Menu Bearbeiten oder Assign wird neuer Job gewählt
+| Template mit Form für neuen Job wird zurückgegeben
+
+
+| I-DutyPlanGetControllerSignOutTestP
+| <<UCD0503>>
+| DutyPlanGetController
+| DutyPlan existiert
+| im Menu Bearbeiten wird "Aus Dutyplan austragen" gewählt
+| der User wird aus allen Jobs des Plans ausgetragen
+
+
+| I-DutyPlanGetControllerEditJobFormTestP
+| <<UCD0503>>
+| DutyPlanGetController
+| Job existiert
+| das Menu Bearbeiten wird gewählt
+| eine Auswahl der zu bearbeitenden Jobs wird angezeigt
+
+
+| I-DutyPlanGetControllerEditJobTestP
+| <<UCD0503>>
+| DutyPlanGetController
+| Job existiert
+| im Menu Bearbeiten wird ein Job gewählt
+| eine korrekt ausgefüllte Form zum Bearbeiten des Jobs wird zurückgegeben
+
+
+| I-DutyPlanGetControllerDeleteJobTestP
+| 
+| DutyPlanGetController
+| Job existiert
+| im Menu Bearbeiten wird Job löschen gewählt
+| der Job wird gelöscht
+
+
+| I-DutyPlanPostControllerAssignUserTestP
+| 
+| DutyPlanPostController
+| Die options Felder sind ausgefüllt
+| User und Job
+| Der gewählte User wird dem gewählten Job zugeordnet
+
+
+| I-DutyPlanPostControllerNewJobTestP
+| 
+| DutyPlanPostController
+| Die Form Felder sind ausgefüllt
+| Job Name und Job Description
+| der Job wird mit den Daten der Form erstellt
+
+
+| U-DutyPlanPostControllerEditJobTest-P
+|
+| DutyPlanPostController
+| DutyPlan und Job existieren
+| Klick auf Jobs bearbeiten, Wahl des Jobs, korrektes Ausfüllen der JobForm
+| Der Job wird mit den gegebenen Werten aktualisiert
+
+
+| U-RestController-getEventById-P-1
+| UCD0802
+| RestController
+| Es wurden beispiel Events in der Datenbank gespeichert.
+| get Request an /rest/event?id={id}
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt einen json String zurück
+    - Daten des Strings stimmen mit den Daten im System überein
+
+| U-RestController-getEventList-P-1
+| UCD0801
+| RestController
+| Es wurden beispiel Events in der Datenbank gespeichert.
+| get Request an /rest/eventList
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt einen json String mit mehreren Events zurück
+    - Daten des Strings stimmen mit den Daten im System überein
+
+| U-RestController-amountAfterTime-P-1
+| UCD0801
+| RestController
+| Es wurden beispiel Events in der Datenbank gespeichert.
+| get Request an /rest/eventsAfter?amount=1&start=[LocalDateTime]
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt einen json String einer bestimmten Anzahl Events zurück, welche nach der angegebenen Zeit stattfinden
+    - Daten des Strings stimmen mit den Daten im System überein
+
+| U-RestController-betweenTime-P-1
+| UCD0801
+| RestController
+| Es wurden beispiel Events in der Datenbank gespeichert.
+| get Request an /rest/eventsBetween?start=[start]&end=[end]
+a|  - Der Webserver antwortet mit 200
+    - Der Server gibt einen json String mit mehreren Events zurück welche im angegebenen Zeitraum liegen.
+    - Daten des Strings stimmen mit den Daten im System überein
+
+| U-RestController-Dutyplan-P-1
+| UCD0801
+| RestController
+| Es wurden beispiel Events in der Datenbank gespeichert.
+| get Request an /rest/dutyplan?eventId=[id]
+a|  - Der Server antwortet mit 200.
+    - Der Server gibt einen Json String mit den richtigen Attributen zurück.
+
+| U-RestManagement-getEventById-P-1
+| UCD0802
+| RestManagement
+| -
+| Beliebige id in aus der Veranstaltungsdatenbank
+| Die gesuchte Veranstaltung stimmt mit der zurükgegebenen überein .
+
+| U-RestManagement-getSortedEvents-P-1
+| -
+| RestManagement
+| -
+| -
+| Alle Veranstaltungen sind in chronologischer Reihenfolgen.
+
+| U-RestManagement-amountAfterTime-P-1
+| UCD0801
+| RestManagement
+| -
+a|  - Anzahl der Veranstaltungen
+    - Ein Start- Datum/Zeit
+a|  - maximal soviele Events wie gesucht
+    - Die Veranstaltungen finden nach der eingegebenen Zeit statt.
+
+| U-RestManagement-betweenTime-P-1
+| UCD0801
+| RestManagement
+| -
+a|  - Ein Start- Datum/Zeit
+    - Ein/e End- Datum/Zeit
+| Die Veranstaltungen liegen im gesuchten Zeitraum.
+
+| U-RestController-MyEvents-P-1
+| UCD0801
+| RestManagement
+| -
+a|  - Nutzer uuid
+    - Ein Start- Datum/Zeit
+    - Ein/e End- Datum/Zeit 
+| Alle Veranstaltungen in dem Zeitraum in die der Nutzer Jobs hat.
+
+| U-RestEvent-create-P-1
+| -
+| RestEvent
+| -
+| Ein Event
+| Die Daten des RestEvents stimmen mit denen des Events überein
+
+| U-RestUser-create-P-1
+| -
+| RestUser
+| -
+| Ein Nutzer
+| Die Daten des RestUser stimmen mit denen des Users überein
+
+|===
+
+
+
+
+

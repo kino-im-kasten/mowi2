@@ -1,0 +1,370 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Documentation</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left"></ul>
+        <div id="content-wrapper">
+
+            <div class="container">
+                <br/>
+                <h2 th:text="#{documentation.documentation}">Dokumentation</h2>
+                <hr>
+
+
+                <h4>Allgemein</h4>
+                <p>
+                    Herzlich Willkommen auf unserer Website!<br/>
+                    Damit du dich gleich von Anfang an gut zurecht findest, empfehlen wir dir diese Seite zu aller Erst
+                    mit der Maus zu erkunden.<br/>
+                    Viele Menüs und Hinweise findest du am einfachsten, indem du mit dem Mauszeiger darüber gehst.<br/>
+                    Zum Beispiel kannst du über fast jedes Thumbnail mit deiner Maus gehen, um einen Link auf die
+                    Detail-Seite (<i class="fas fa-info-circle"></i>) des jeweiligen Objekts zu bekommen.
+                </p>
+
+                <br/>
+
+
+                <h4 id="sidebar-doc">Sidebar</h4>
+                <p>
+                    Die Sidebar kann über den <i class="fas fa-bars"></i>-Knopf geöffnet und geschlossen werden.
+                    Ist die Seitenbreite über 765px so ist sie von Anfang an ausgeklappt, andernfalls nicht.
+                </p>
+                <p>
+                    Die oberen zwei Knöpfe stellen zentrale Funktionen für alle Seiten zur verfügung
+                    <br/>
+                    Der <i class="fas fa-arrow-left"></i>-Knopf bringt dich immer zurück auf die vorherige Seite.
+                    Aber achtung! Er bringt dich auch auf die Login-Seite zurück, solltest du dort vorher gewesen sein
+                    und genauso bringt er dich auch auf jede andere externe Seite zurück von der du evtl. gekommen bist.
+                    <br>
+                    Über den <i class="fas fa-question-circle"></i>-Knopf
+                    kannst du dir alle Bootstrap-Tooltips der aktuellen Seite anzeigen lassen.
+                    Zum Beispiel die zur Erklärung der Karten-Farben (siehe auch
+                    <a href="#card-color-doc">in diesem Teil der Dokumentation</a>).
+                </p>
+                <p>
+                    Über die restlichen Menü-Punkte kann man alle Übersichtsseiten ereichen.
+                    <br/>
+                    Die Ersten davon stehen dabei für aktuelle Dinge, im Archiv kannst du alle Dinge finden die je
+                    erstellt und nicht gelöscht wurden und im Bereich "Admin" findest du die administratorischen Verwaltungs-Seiten.
+                    <br/>
+                    Wenn du etwas neues erstellen willst kannst du dich auf den entsprechenden Seiten umsehen (siehe restliche Dokumentation)
+                    oder du benutzt die RAPID-QUICK-SUPER-FAST-Buttons© (<i class="fas fa-plus"></i>) um schnell auf die
+                    Erstellen-Seite für die entsprechenden Dinge zu kommen.
+                </p>
+
+                <br/>
+
+                <h4 id="card-color-doc">Bedeutung der Farben in den Übersichten</h4>
+                <p>
+                    Jede Karte (/Spalte) hat ihre eigene Farbe, welche am linken Rand zu sehen ist. Diese Farben dienen
+                    zur schnellen Übersicht und sollen warnen. Wenn du mit der Maus über die Farben fährst,
+                    bekommst du genauer aufgeschlüsselt was der Fehler sein könnte.
+                    Wenn du mobil unterwegs bist oder sonstige Gründe dafür hast, solltest du zum öffnen der Tooltips auch
+                    den oben genannten Weg benutzen können. (siehe <a href="sidebar-doc">Sidebar</a> unter <i class="fas fa-question-circle"></i>-Knopf)
+                </p>
+                <h5>Veranstaltungen</h5>
+                <ul>
+                    <li th:text="#{documentation.color.green} + ' - ' + #{event.overview.green}">grün - Alles ist in Ordnung</li>
+                    <li th:text="#{documentation.color.orange} + ' - ' + #{event.overview.orange}">orange - Es sind noch Rollen besetzt, es bleibt aber noch Zeit.</li>
+                    <li th:text="#{documentation.color.red} + ' - ' + #{event.overview.red}">rot - Es sind noch keine Rollen besetzt und die Zeit drängt!</li>
+                </ul>
+                <h5>Buchungen</h5>
+                <ul>
+                    <li th:text="#{documentation.color.green} + ' - ' + #{booking.overview.green}">grün - Der Buchungszeitraum ist noch nicht vorbei.</li>
+                    <li th:text="#{documentation.color.orange} + ' - ' + #{booking.overview.orange}">orange - Die Buchung kann abgerechnet werden.</li>
+                    <li th:text="#{documentation.color.red} + ' - ' + #{booking.overview.red}">rot - Der Buchungszeitraum ist noch nicht vorbei.</li>
+                    <li th:text="#{documentation.color.grey} + ' - ' + #{booking.overview.empty}">grau - Der Buchung ist archiviert.</li>
+                </ul>
+
+                <br/>
+
+                <h4 id="movies-doc">Filme</h4>
+                <p>
+                <ul>
+                    <li>
+                        <i class="fas fa-pen"></i>
+                        <span th:text="' - ' + #{doc.movie.edit}"></span>
+                    </li>
+                    <li>
+                        <i class="fas fa-trash-alt"></i>
+                        <span th:text="' - ' + #{doc.movie.delete}"></span>
+                    </li>
+                    <li>
+                        <i class="fas fa-info-circle"></i>
+                        <span th:text="' - ' + #{doc.movie.details}"></span>
+                    </li>
+
+                </ul>
+
+                </p>
+
+                <br/>
+
+                <h4 id="events-doc">Veranstaltungen</h4>
+                <p>
+                    Das Kernstück der Anwendung, die Veranstaltungen. Film- und Spezialveranstaltungen sind sehr ähnlich aufgebaut und teilen sich die meisten Eigenschaften und Attribute. Natürlich
+                    besitzen Filmveranstaltungen immer eine ihnen zugrunde liegende Buchung, mit der sie assoziiert sind. Für Veranstaltungen können folgende Knöpfe verwendet werden, um schnell an
+                    Einstellungen und Informationen zu kommen.
+                </p>
+                <ul>
+                    <li>
+                        <i class="fas fa-pen"></i>
+                        <span th:text="' - ' + #{doc.event.pen}"></span>
+                    </li>
+                    <li>
+                        <i class="fas fa-ticket-alt"></i>
+                        <span th:text="' - ' + #{doc.event.tickets}"></span>
+                    </li>
+                    <li>
+                        <i class="fas fa-user-edit"></i>
+                        <span th:text="' - ' + #{doc.event.user}"></span>
+                    </li>
+                    <li>
+                        <i class="fas fa-calendar"></i>
+                        <span th:text="' - ' + #{doc.event.calendar}"></span>
+                    </li>
+                    <li>
+                        <i class="fas fa-trash-alt"></i>
+                        <span th:text="' - ' + #{doc.event.trash}"></span>
+                    </li>
+                </ul>
+                <h5 id="movie-events-doc">Film-Events</h5>
+                <p>
+                    Der am meisten verwendeten Veranstaltungstyp. Er liegt stets einer Buchung zugrunde, was beim Erstellen dieser Veranstaltung durchgesetzt wird. Hier muss aufgepasst werden, damit das
+                    Datum des Filmes innerhalb der Datums der Buchung ist.<br/>Auf der Startseite werden die Filmveranstaltungen gelistet, die entweder noch in der Zukunft liegen, oder die weder
+                    abgerechnet noch mit Tickets ausgestattet sind. Dies zu verstehen ist wichtig, da man sonst umsonst auf der Startseite sucht. Also werden Veranstaltungen, die in der Vergangenheit
+                    (mit einem Tag Versatz) als alte Veranstaltungen gelistet.<br/>Die verwendeten Farben zeigen, im Ampelsysten, wie bereits beschrieben an, ob noch etwas zu tun ist (rot / orange),
+                    oder ob alles in Ordnung ist (grün).
+                </p>
+                <h5 id="special-events-doc">Spezial-Events</h5>
+                <p>
+                    Neben den Filmveranstaltungen existieren auch spezielle Veranstaltung, zum Beispiel interne Events des Kino im Kastens, bei denen sich Mitarbeiter treffen, oder ein Gruppenmeeting
+                    abhalten. Diese Art von Veranstaltungen werden hier gelistet, und besitzen wenige Restriktionen bezüglich des Datums. Der Vorgang des Erstellens ist parallel zu den
+                    Filmveranstaltungen und selbsterklärend.
+                </p>
+                <h5 id="jobs-doc">Jobs</h5>
+                <p>
+                    Nachdem Veranstaltungen erstellt wurden, werden nötige Aufgaben über den Dienstplan des jeweiligen Events organisiert. Bei Erstellung eines Events werden 3 Default-Jobs erstellt,
+                    "Gastro", "Kasse" und "Vorführer". Diese sind über die Konfigurationsdatei anpassbar.
+                    Wenn man auf einen der verfügbaren Jobs klickt, trägt man sich für ihn ein. Bei einem erneuten Klick wird man analog wieder ausgetragen.
+                    Admins und Orgas haben durch einen Klick auf einen besetzten Job zusätzlich die Möglichkeit, andere User auszutragen.
+                    Ebenso haben Admins die Möglichkeit, andere Nutzer zu Jobs zuzuweisen, in dem sie den Knopf <i class="fas fa-user-edit"></i> drücken. Dort haben sie die Auswahl des Nutzers und des Jobs
+                    zu treffen. Ebenso ist dort ein Link zur Erstellung eines neuen Jobs und die Möglichkeit, sich selbst aus allen Jobs des Events auszutragen.
+                    Orgas haben die Möglichkeit, mit Hilfe des <i class="fas fa-calendar"></i> Knopfes Jobs zu bearbeiten, sowie neue Jobs zu erstellen.
+
+                </p>
+
+                <br/>
+
+                <h4 id="distributor-doc">Verleiher</h4>
+                <p>
+                    Hier werden die Filmverleiher geführt. Diese sind Voraussetzung für Buchungen und halten die Kontaktdaten der Verleiher und möglicher Kontaktpersonen.
+                    Jeder Verleiher braucht einen Namen, eine Telephonnummer und eine Adresse. Die Felder für E-Mail und Fax sind optional.
+                    Kontaktpersonen können eine Rolle beim Verleiher, eine E-Mail und eine Telephonnummer bekommen.
+                    Zum Bearbeiten einer Kontaktperson muss nur von einem Benutzer mit Orga-Rechten auf ihren Namen geklickt werden,
+                    ein Klick auf E-Mail oder Telephonnummer öffnet die vom Betriebssystem zugewiesene Aktion für die gewählten Kontaktdaten.
+
+                    <li>
+                    <i class="fas fa-pen"></i>
+                        <span th:text="'Hier kann man einen Verleiher bearbeiten. Dies benötigt Rechte des Orgas.'"></span>
+                    </li>
+                    <li>
+                        <i class="fas fa-trash-alt"></i>
+                        <span th:text="'Hier kann man einen Verleiher löschen. Dies benötigt Rechte des Orgas.'"></span>
+                    </li>
+                </p>
+
+                <br/>
+
+                <h4 id="bookings-doc">Buchungen</h4>
+                <p>
+                    Zum Erstellen einer Buchung muss vorher sowohl der Verleiher als auch der Film, mit dem die Buchung
+                    verknüpft werden soll, angelegt werden. Auf der Basis einer Buchung lassen sich nun
+                    Filmveranstaltungen erstellen und planen. Die Detailansicht einer Buchung gibt Aufschluss über die
+                    mit ihr verknüpften Filmveranstaltungen und darüber, ob bzw. welche Ticketnummern in den
+                    Veranstaltungen eingetragen wurden. Wenn der Buchungszeitraum abgelaufen ist und für alle
+                    verknüpften Veranstaltungen valide Ticketnummern eingetragen wurden, kann die Buchung abgerechnet
+                    werden, was sowohl den Status der Buchung als auch den der verknüpften Vranstaltungen auf
+                    abgerechnet setzt und das Generieren der Abrechnungs-PDF ermöglicht.
+                </p>
+                <p>
+                    In der Übersicht 'Buchung' werden alle Buchungen angezeigt, während in der Übersicht 'Aktuelle
+                    Buchungen' lediglich diejenigen Buchungen angezeigt werden, die weder abgerechnet noch storniert
+                    wurden. Aktuelle Buchungen, deren Buchungszeitraum abgelaufen ist und die dementsprechend
+                    abgerechnet werden müssen, werden in den Übersichten stets an oberster Stelle gelistet.
+                </p>
+
+                <br/>
+
+                <div sec:authorize="hasRole('ADMIN')">
+
+                    <h4 id="user-doc">Benutzer</h4>
+                    <p>
+                        Nutzer können im dieser Anwendung nur von Administratoren erstellt und bearbeitet werden.
+                        Jeder Nutzer ist entweder "Admin", "Organisator" oder gewöhnlicher "User". Wenn du das hier lesen kannst, bist du ein Admin.
+                        Beim erstellen eines neuen Benutzers, wird ein Freischaltpasswort generiert, außer es wird explizit ein gewünschtes Freischaltpasswort angegeben.
+                        Nach dem erfolgreichen Login eines neu erstellen Benutzers, muss dieser sich freischalten, indem er ein neues Passwort für sich wählt.
+                        In der Benutzerübersicht können Benutzer über folgende Knöpfe bearbeitet werden:
+                    </p>
+                    <ul>
+                        <li>
+                            <i class="fas fa-pen"></i>
+                            <span th:text="' - ' + #{doc.user.edit}"></span>
+                        </li>
+                        <li>
+                            <i class="fas fa-trash-alt"></i>
+                            <span th:text="' - ' + #{doc.user.trash}"></span>
+                        </li>
+                    </ul>
+                    <p>
+                        In der Benutzerübersicht werden standartmäßig alle nicht gelöschten Benutzer angezeigt.
+                        Um gelöschte Benutzer anzusehen, kann folgender Knopf geklickt werden
+                        <button type="submit" class="btn btn-danger"
+                                th:text="#{user.overview.change_to_deleted}" >show deleted
+                        </button>
+                    </p>
+
+                </div>
+
+                <br/>
+
+                <h4 id="settings-doc">Einstellungen</h4>
+                <p>
+                    Auf der Einstellungsseite kann die Konfigurationsdatei nachgeladen werden.
+                    Alle in dieser Datei enthaltenen Standart-Daten, werden auf der Seite angezeigt:
+                    normaler Preis, ermäßigter Preis, Startzeit, Jobs mit Namen und Beschreibung, Regulärer Ausdruck zur Passwortverifizierung
+                </p>
+
+                <br/>
+
+                <h4 id="overview-doc">Übersicht</h4>
+                <p>
+                    Die Übersicht ist in monatliche Kacheln unterteilt, welche verschiedenste Daten enthalten.
+                    Es werden maximal 12 Monate betrachtet und in den Diagrammen dargestellt.
+                </p>
+
+                <br/>
+
+                <div sec:authorize="hasRole('ADMIN')">
+                    <h4 id="api-doc">Rest API</h4>
+                    <h5>Informationen</h5>
+
+                    <ul>
+                        <li>Alle Zeiten sind als lokale Zeiten zu verstehen.</li>
+                        <li>Alle Zugriffe sind als GET-Request durchzuführen.</li>
+                        <li>Die UUID ist als Administrator unter den Nutzerdetails zu finden.</li>
+                    </ul>
+
+                    <br>
+                    <p>Um auf Daten im Json-Format zuzugreifen, gibt es folgende Möglichkeiten:</p>
+
+                    <br>
+                    <h5>Ein Event per Id</h5>
+
+                    <ul>
+                        <li>
+                            Format: <code>/rest/event?id=[id]</code>
+                        </li>
+                        <li>
+                            Bsp: <code>/rest/event?id=1</code>
+                        </li>
+                    </ul>
+
+                    <br>
+                    <h5>Alle in der Datenbank existierenden Events</h5>
+
+                    <ul>
+                        <li>
+                            Format: <code>/rest/eventList</code>
+                        </li>
+                    </ul>
+
+                    <br>
+                    <h5>Eine bestimmte Anzahl an Events ab einer Zeit</h5>
+
+                    <ul>
+                        <li>
+                            Format: <code>/rest/eventsAfter?amount=[Amount]&start=[Date]</code>
+                        </li>
+                        <li>
+                            Bsp: <code>/rest/eventsAfter?amount=1&start=2019-12-03T20:15</code>
+                        </li>
+                    </ul>
+
+                    <br>
+                    <h5>Events zwischen einem Zeitraum</h5>
+
+                    <ul>
+                        <li>
+                            Format: <code>/rest/eventsBetween?start=[Date]&end=[Date]</code>
+                        </li>
+                        <li>
+                            Bsp: <code>/rest/eventsBetween?start=2019-12-03T20:15&end=2020-12-03T20:15</code>
+                        </li>
+                    </ul>
+
+                    <br>
+                    <h5>Einen Diensplan über eine Event-Id</h5>
+
+                    <ul>
+                        <li>
+                            Format: <code>/rest/dutyplan?eventId=[id]</code>
+                        </li>
+                        <li>
+                            Bsp: <code>/rest/dutyplan?eventId=2</code>
+                        </li>
+                    </ul>
+
+                    <br>
+                    <h5>Alle Veranstaltungen für einen Nutzer in einem Zeitraum</h5>
+
+                    <ul>
+                        <li>
+                            Format: <code>/rest/eventsForUser?uuid=[UUID]&start=[DATE]&end=[DATE]</code>
+                        </li>
+                        <li>
+                            Bsp: <code>/rest/eventsForUser?uuid=61cf7ce7-283f-45a4-ae19-52f6a600c5ef&start=2019-12-03T20:15&end=2020-12-03T20:15</code>
+                        </li>
+                    </ul>
+
+                    <br>
+                    <h5>Abrufen eines Bildes</h5>
+
+                    <p>Ein Filmplakat ist in einem Movie-Objekt mit seiner Id hinterlegt (pictureId). Um ein Bild abzurufen, muss nur eine Angfrage geschickt werden an:</p>
+                    <code>/movies/image/[pictureId]</code>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

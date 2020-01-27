@@ -1,0 +1,226 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <title>
+        <th:block th:text="#{specialEvent.overview.title}"/>
+    </title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left"></ul>
+        <div id="content-wrapper">
+            <!-- HEADING -->
+            <div id="archive-header">
+                <div class="row">
+                    <div class="col" id="heading-col">
+                        <h3 id="content-heading" th:text="#{event.title.specialEventOverview}">Sonderveranstaltungen</h3>
+                        <a th:href="@{/specialEvents/createSpecialEvent/}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <!-- SORTING BY SEARCH-STRING -->
+                    <div class="col" id="search-col">
+                        <form method="post" th:action="@{/specialEvents/}">
+                            <label for="input"></label>
+                            <input id="input" type="text" name="input" placeholder="SUCHEN" th:attr="value = ${input}">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOAD PREVIOUS OR NEXT EVENTS -->
+            <div class="row">
+                <div class="col">
+                    <!-- LOAD PREVIOUS -->
+                    <h6>
+                        <th:block th:text="'  '"/>
+                        <a th:href="@{/specialEvents/?currentEventCount={cec}&backwards=true&switched={swi}&showOld={old}(cec=${currentEventCount}, swi=!${backwards}, old=${showOld})}">
+                            <i class="fas fa-angle-double-left"></i>
+                            <th:block th:text="' ' + #{event.load.previous}"/>
+                        </a>
+                        <th:block th:text="'  |  '"/>
+                        <!-- LOAD NEXT -->
+                        <a th:href="@{/specialEvents/?currentEventCount={cec}&backwards=false&switched={swi}&showOld={old}(cec=${currentEventCount}, swi=${backwards}, old=${showOld})}">
+                            <th:block th:text="#{event.load.more} + ' '"/>
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </h6>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <!-- LOAD OLD -->
+                    <h6>
+                        <a th:href="@{/specialEvents/?showOld=true}">
+                            <th:block th:text="' ' + #{event.load.old}"/>
+                        </a>
+                        <th:block th:text="'  |  '"/>
+                        <!-- LOAD RECENT -->
+                        <a th:href="@{/specialEvents/?showOld=false}">
+                            <th:block th:text="#{event.load.new} + ' '"/>
+                        </a>
+                    </h6>
+                </div>
+            </div>
+
+            <!-- FILTERING BY ATTRIBUTES -->
+            <div class="row kik-table-header">
+                <div class="col flex-2">
+                    <th:block th:text="#{specialEvent.details.name}">Name der Filmveranstaltung</th:block>
+                    <a class="fas fa-sort" th:href="@{/specialEvents/(sort=fullyQualifiedName, asc=${sortedBy}=='fullyQualifiedName'?not${asc}:true)}"></a>
+                </div>
+                <div class="col flex-1">
+                    <th:block th:text="#{specialEvent.details.date}">Datum</th:block>
+                    <a class="fas fa-sort" th:href="@{/specialEvents/(sort=odt, asc=${sortedBy}=='odt'?not${asc}:true)}"></a>
+                </div>
+            </div>
+
+            <!-- OVERVIEW OF ALL SPECIAL EVENTS -->
+            <div class="row" th:each="specialEvent : ${specialEvents}">
+                <div class="kik-card movieEvent" th:classappend="${specialEvent.getColour()}">
+                    <!-- FQN & TYPE -->
+                    <div class="row">
+                        <div class="col title">
+                            <a th:href="@{/specialEvents/details/{id}/(id=${specialEvent.id})}">
+                                <h5 th:text="${specialEvent.fullyQualifiedName}">Name der Veranstaltung</h5>
+                                <p th:text="${specialEvent.typeAsString} + ', ' + ${specialEvent.eventPublicityAsString}">Typ & Öffentlichkeit</p>
+                            </a>
+                        </div>
+                        <!-- DATE & TIME -->
+                        <div class="col">
+                            <p th:text="#{specialEvent.overview.dateAndTime}">Datum und Uhrzeit</p>
+                            <p>
+                                <th:block th:text="${{specialEvent.odt}} + ' Uhr'"/>
+                            </p>
+                        </div>
+                        <!-- EXPECTED END -->
+                        <div class="col">
+                            <p th:text="#{specialEvent.overview.expectedEnd}">Voraussichtliches Ende</p>
+                            <p>
+                                <th:block th:text="${{specialEvent.expectedEnd}} + ' Uhr'"/>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- JOBS -->
+                        <div class="col event-col-jobs">
+                            <div class="row event-jobs">
+                                <div class="col" th:each="job : ${specialEvent.getDutyPlan().getAllRoles()}">
+                                    <a th:href="@{/dutyplan/assignme/(jobId=${job.getId()},dpId=${specialEvent.getDutyPlan().getId()},redirectTo=2)}"><h5 th:text="${job.getJobName()}">Job 1</h5></a>
+                                    <div th:if="${job.getWorker()} == null"><p>----</p></div>
+                                    <div th:if="${job.getWorker()} != null"><p th:text="${job.getWorker().getName()}">Name</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- EDIT & DELETE -->
+                    <div class="top-right-floater">
+                        <!-- EDIT DETAILS -->
+                        <a th:href="@{/specialEvents/edit/{id}/?redirectTo=1&specialEventId={id}(id=${specialEvent.id})}">
+                            <button th:title="#{movie.overview.edit}"><i class="fas fa-pen"></i></button>
+                        </a>
+                        <!-- DELETE -->
+                        <div sec:authorize="hasRole('ORGA')" th:id="'any-modal-caller-' + ${specialEvent.id}">
+                            <p class="init d-none" th:text="0" th:href="@{/specialEvents/delete/{id}/(id=${specialEvent.id})}"></p>
+                            <p class="attr d-none" type="hidden" name="to-delete" th:text="${specialEvent.fullyQualifiedName}"></p>
+                            <button th:title="#{movie.overview.delete}" th:attr="onclick='anyModal(' + ${specialEvent.id} + ')'">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+
+                        <!-- DUTY-PLAN -->
+                        <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}" method="get" th:action="@{/dutyplan/assign/(redirectTo=2)}">
+                            <input type="hidden" name="dpId" th:value="${specialEvent.getDutyPlan().getId()}"/>
+                            <button th:title="#{dutyPlan.edit}"><i class="fas fa-user-edit"></i></button>
+                        </form>
+                        <form th:if="${#authorization.expression('hasRole(''ORGA'')')}" method="get" th:action="@{/dutyplan/editJob/(redirectTo=2)}">
+                            <input type="hidden" name="dpId" th:value="${specialEvent.getDutyPlan().getId()}"/>
+                            <button  th:title="#{dutyPlan.JobsEdit}"><i class="fas fa-calendar"></i></button>
+                        </form>
+
+                    </div>
+                </div>
+                <th:block th:switch="'${specialEvent.getColour()}'">
+                    <th:block th:case="'red'"><div th:replace="template :: border-tooltip(text=#{event.overview.red})"></div></th:block>
+                    <th:block th:case="'orange'"><div th:replace="template :: border-tooltip(text=#{event.overview.orange})"></div></th:block>
+                    <th:block th:case="'green'"><div th:replace="template :: border-tooltip(text=#{event.overview.green})"></div></th:block>
+                    <th:block th:case="*"><div th:replace="template :: border-tooltip(text=#{event.overview.empty})"></div></th:block>
+                </th:block>
+            </div>
+            <br/>
+
+            <!-- LOAD PREVIOUS OR NEXT EVENTS -->
+            <div class="row">
+                <div class="col">
+                    <!-- LOAD PREVIOUS -->
+                    <h6>
+                        <th:block th:text="'  '"/>
+                        <a th:href="@{/specialEvents/?currentEventCount={cec}&backwards=true&switched={swi}&showOld={old}(cec=${currentEventCount}, swi=!${backwards}, old=${showOld})}">
+                            <i class="fas fa-angle-double-left"></i>
+                            <th:block th:text="' ' + #{event.load.previous}"/>
+                        </a>
+                        <th:block th:text="'  |  '"/>
+                        <!-- LOAD NEXT -->
+                        <a th:href="@{/specialEvents/?currentEventCount={cec}&backwards=false&switched={swi}&showOld={old}(cec=${currentEventCount}, swi=${backwards}, old=${showOld})}">
+                            <th:block th:text="#{event.load.more} + ' '"/>
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </h6>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <!-- LOAD OLD -->
+                    <h6>
+                        <a th:href="@{/specialEvents/?showOld=true}">
+                            <th:block th:text="' ' + #{event.load.old}"/>
+                        </a>
+                        <th:block th:text="'  |  '"/>
+                        <!-- LOAD RECENT -->
+                        <a th:href="@{/specialEvents/?showOld=false}">
+                            <th:block th:text="#{event.load.new} + ' '"/>
+                        </a>
+                    </h6>
+                </div>
+            </div>
+
+            <!-- END OF PAGE -->
+        </div>
+    </div>
+    <div th:replace="template :: any-modal"></div>
+    <div id="modal-helper-0" class="d-none">
+        <div class="modal-title">Event Löschen</div>
+        <div class="modal-body">
+            <p>Du bist gerade dabei eine <b>Sonderveranstaltung</b> zu löschen.</p>
+            <p>Wenn du fortsetzt wird <b class="to-delete"></b> gelöscht.</p>
+        </div>
+        <div class="modal-ok" th:text="#{kik.deletion.delete}"></div>
+        <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+</html>

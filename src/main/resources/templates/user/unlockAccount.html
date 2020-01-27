@@ -1,0 +1,46 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" class="height-hundred">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/login-style.css" type="text/css" th:href="@{/css/login-style.css}">
+
+</head>
+
+<body id="index-body" class="height-hundred">
+<div class="row height-hundred" id="login-page-wrapper">
+    <div id="login-container">
+        <img id="login-logo" src="svgs/logo-programmkino.svg" th:src="@{/svgs/logo-programmkino.svg}">
+
+        <form id="login-form" method="post" th:action="@{/unlockAccount/own}" th:object="${unlockAccountForm}">
+            <div th:if="${#fields.hasErrors('newPasswordAgain')}" th:text="#{user.details.change_password.new_password.not_secure}" class="alert alert-danger" role="alert"></div>
+
+            <div th:unless="${#fields.hasErrors()}" th:text="#{user.unlock_account.headline}" class="alert alert-danger" role="alert">Bitte Passwort ändern</div>
+            <div th:if="${#fields.hasErrors('newPassword')}" th:text="#{user.unlock_account.passwords_error}" class="alert alert-danger" role="alert">passwörter stimmen nicht überein</div>
+            <input class="form-control login-input" type="password" id="newPassword" name="newPassword" th:placeholder="#{user.unlock_account.new_password}">
+            <input class="form-control login-input" type="password" id="newPasswordAgain" name="newPasswordAgain"  th:placeholder="#{user.unlock_account.new_password_again}">
+            <input type="hidden" id="userName" name="userName" th:value="${#authentication.name}">
+            <button type="submit" class="btn btn-primary" id="login-button">UNLOCK</button>
+        </form>
+    </div>
+</div>
+<footer th:replace="template :: footer"></footer>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

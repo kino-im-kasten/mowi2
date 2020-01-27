@@ -1,0 +1,77 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+            <h2 th:text="${distributor.getName()}"></h2>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{distributor.details.address}"></h5>
+                    <p th:text="${distributor.getAddress()}"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{distributor.details.phoneNumber}"></h5>
+                    <p th:text="${distributor.getPhoneNumber()}"></p>
+                </div>
+                <div class="col p-3 m-1" th:if="!(${distributor.faxNumber.isEmpty()} or ${distributor.faxNumber == null})">
+                    <h5 th:text="#{distributor.details.faxNumber}"></h5>
+                    <p th:text="${distributor.getFaxNumber()}"></p>
+                </div>
+                <div class="col p-3 m-1" th:if="!(${distributor.email.isEmpty()} or ${distributor.email == null})">
+                    <h5 th:text="#{distributor.details.email}"></h5>
+                    <p th:text="${distributor.getEmail()}"></p>
+                </div>
+            </div>
+            </br>
+
+            <div id="heading-col">
+                <h4 th:if="${distributor.getContactPersons() != null}" th:text="#{distributor.details.contactPersons}"></h4>
+                <a th:if="${#authorization.expression('hasRole(''ORGA'')')}" th:href="@{/distributor/addContactPerson/{id}(id=${distributor.getId()})}"><i class="fas fa-plus"></i></a>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1" th:each="person : ${distributor.getContactPersons()}">
+                    <h5><a th:if="${#authorization.expression('hasRole(''ORGA'')')}" th:href="@{/distributor/details/{did}/editContactPerson/{cid}(did=${distributor.getId()},cid=${person.getId()})}" th:text="${person.getName()}"></a></h5>
+                    <h5><p th:if="${!#authorization.expression('hasRole(''ORGA'')')}" th:href="@{/distributor/details/{did}/editContactPerson/{cid}(did=${distributor.getId()},cid=${person.getId()})}" th:text="${person.getName()}"></p></h5>
+                    <a th:if="${person.getEmailAddress()} != ''" th:text="'E-Mail:&emsp;' + ${person.getEmailAddress()}" th:href="'mailto:'+${person.getEmailAddress()}"></a>
+                    <br/>
+                    <a th:text="#{distributor.details.phoneNumber}+'&emsp;'+${person.getPhoneNumber()}" th:href="'tel:'+${person.getPhoneNumber()}"></a>
+                    <p th:if="${person.getRole()} != ''" th:text="#{distributor.details.role} +'&emsp;' + ${person.getRole()}"></p>
+                    <br />
+                </div>
+            </div>
+            <a th:if="${#authorization.expression('hasRole(''ORGA'')')}" th:href="@{/distributor/edit/{id}(id=${distributor.getId()})}" th:text="#{distributor.overview.edit}"></a>
+            <br/>
+            <a th:href="@{/distributor}" th:text="#{distributor.details.back}"></a>
+
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

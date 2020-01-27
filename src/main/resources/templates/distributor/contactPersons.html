@@ -1,0 +1,89 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+
+
+            <!-- SPECIFIC CONTENT GOES HERE -->
+            <div id="archive-header">
+                <div class="row">
+                    <div class="col" id="heading-col">
+                        <h2 th:text="#{distributor.details.contactPersons}"></h2>
+                    </div>
+                    <div class="col" id="search-col"><input type="text" id="archive-search" th:placeholder="#{distributor.overview.search}"><i class="fa fa-search"></i></div>
+                </div>
+            </div>
+            <h3 id="headerlink"><a href="registerDistributor.html" th:href="@{/contactPersonAdd}"><th:block th:text="#{distributor.details.addContactPerson}"/></a></h3>
+            <div class="row kik-table-header distributor">
+                <div class="col flex-2">
+                    <h4 th:text="#{distributor.overview.contactPerson}"><i class="fas fa-sort"></i></h4>
+                </div>
+                <div class="col">
+                    <h4 th:text="#{distributor.overview.phoneNumber}"><i class="fas fa-sort-down"></i></h4>
+                </div>
+                <div class="col">
+                    <h4 th:text="#{distributor.contactPerson.edit.email}"><i class="fas fa-sort"></i></h4>
+                </div>
+
+            </div>
+
+
+            <div class="row kik-card distributor" th:each="person : ${persons}">
+                <div class="col title">
+                    <h4><a th:href="@{/distributor/details/{did}/editContactPerson/{cid}(id=${person.getId()},cid=${person.getId()})}" th:text="${person.getName()}">Verleiher</a></h4>
+                </div>
+                <div class="col">
+                    <p th:text="${person.getPhoneNumber()}">Telefon</p>
+                </div>
+                <div class="col">
+                    <p th:text="${person.getEmailAddress()}">Adresse</p>
+                </div>
+
+                <form th:method="delete" th:action="@{/distributor/delete/{id}(id=${person.getId()})}" th:attr="id=${person.getId()}">
+                    <button style="height:100%;width:100%" th:title="#{distributor.overview.delete}">
+                        <span class="fas fa-window-close"></span>
+                    </button>
+                </form>
+
+                <a th:href="@{/distributor/edit/{id}(id=${person.getId()})}">
+                    <button style="height:100%;width:100%" th:title="#{distributor.overview.edit}">
+                        <span class="fas fa-pen-fancy" ></span>
+                    </button>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <title>
+        <th:block th:text="#{event.title.details}"/>
+    </title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left"></ul>
+        <div id="content-wrapper">
+            <!-- HEADING -->
+            <div class="col" id="heading-col">
+                <h3 th:text="#{movieEvent.details.heading}"></h3>
+                <a th:href="@{/movieEvents/edit/{id}/?redirectTo=2&movieEventId={id}(id=${movieEvent.id})}"
+                   th:title="#{movie.overview.edit}">
+                    <i class="fas fa-pen"></i>
+                </a>
+            </div>
+            <!-- DETAILS -->
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <!-- BOOKING -->
+                <div class="col p-3 m-1">
+                    <a th:href="@{/bookings/booking?id={id}(id=${movieEvent.booking.id})}">
+                        <h5 th:text="#{movieEvent.details.booking}"></h5>
+                        <p th:text="${{movieEvent.booking.displayName}}"></p>
+                    </a>
+                </div>
+                <!-- TYPE -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.type}"></h5>
+                    <a th:href="@{/movies/details/{id}(id=${movieEvent.booking.movie.id})}">
+                        <p th:text="${{movieEvent.typeAsString}}"></p>
+                    </a>
+                </div>
+                <!-- ADDITIONAL NAME -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.additionalName}"></h5>
+                    <p th:text="${{movieEvent.additonalName}}"></p>
+                </div>
+                <!-- FQN -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.fqn}"></h5>
+                    <p th:text="${{movieEvent.fullyQualifiedName}}"></p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <!-- PUBLICITY -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.publicity}"></h5>
+                    <p th:text="${{movieEvent.eventPublicityAsString}}"></p>
+                </div>
+                <!-- PLANNING STATUS -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.status}"></h5>
+                    <p th:text="${{movieEvent.planningStatusAsString}}"></p>
+                </div>
+                <!-- DATE -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.date}"></h5>
+                    <p th:text="${{movieEvent.date}}"></p>
+                </div>
+                <!-- TIME -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.start}"></h5>
+                    <p th:text="${{movieEvent.start}} + ' Uhr'"></p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <!-- DURATION -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.duration}"></h5>
+                    <p th:text="${{movieEvent.duration}} + ' Minuten'"></p>
+                </div>
+                <!-- EXPECTED END -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.expectedEnd}"></h5>
+                    <p th:text="${{movieEvent.expectedEnd}} + ' Uhr'"></p>
+                </div>
+            </div>
+            <br/>
+            <!-- TICKETS -->
+            <div class="col" id="heading-col">
+                <h3 th:text="#{movieEvent.details.tickets}"></h3>
+                <a th:href="@{/movieEvents/tickets/{id}/?redirectTo=2&movieEventId={id}(id=${movieEvent.id})}">
+                    <i class="fas fa-ticket-alt"></i>
+                </a>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.normalPrice}"></h5>
+                    <p th:text="${#numbers.formatDecimal(movieEvent.tickets.normalPrice, 1, 'DEFAULT', 2 ,'DEFAULT')} + ' €'"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.start}"></h5>
+                    <p th:text="${{movieEvent.tickets.cardNormalStartNumber}}"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.end}"></h5>
+                    <p th:text="${{movieEvent.tickets.cardNormalEndNumber}}"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.count}"></h5>
+                    <p th:text="${{movieEvent.tickets.normalCount}}"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.sum}"></h5>
+                    <p th:text="${#numbers.formatDecimal(movieEvent.tickets.normalSum, 1, 'DEFAULT', 2 ,'DEFAULT')} + ' €'"></p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.reducedPrice}"></h5>
+                    <p th:text="${#numbers.formatDecimal(movieEvent.tickets.reducedPrice, 1, 'DEFAULT', 2 ,'DEFAULT')} + ' €'"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.start}"></h5>
+                    <p th:text="${{movieEvent.tickets.cardReducedStartNumber}}"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.end}"></h5>
+                    <p th:text="${{movieEvent.tickets.cardReducedEndNumber}}"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.count}"></h5>
+                    <p th:text="${{movieEvent.tickets.reducedCount}}"></p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.sum}"></h5>
+                    <p th:text="${#numbers.formatDecimal(movieEvent.tickets.reducedSum, 1, 'DEFAULT', 2 ,'DEFAULT')} + ' €'"></p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.total}"></h5>
+                    <p th:text="${#numbers.formatDecimal(movieEvent.calculateRawTicketsRevenue(), 1, 'DEFAULT', 2 ,'DEFAULT')} + ' €'"></p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.tickets.free}"></h5>
+                    <p th:text="${{movieEvent.tickets.cardFreeAmount}}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+</html>

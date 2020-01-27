@@ -1,0 +1,190 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div id="main-wrapper">
+        <nav th:replace="template :: navbar-top"></nav>
+        <div class="wrapper">
+            <ul th:replace="template :: navbar-left" ></ul>
+            <div id="content-wrapper">
+
+                <!-- SPECIFIC CONTENT GOES HERE -->
+                <h3 id="content-heading" th:text="#{overview.heading}">Übersicht</h3>
+                <div class="container month-scroller">
+                    <div class="card month-card" th:each="overview : ${overviewList}">
+                        <div class="card-body month-card-body">
+                            <h4 th:text="#{${overview.month}}+' '+${overview.year}">November 2019</h4>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="d-none">
+                                    <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="font-bold" th:text="#{overview.sales}">Umsatz</td>
+                                        <td class="align-right" th:text="${overview.sales}">0 €</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold" th:text="#{overview.expenses}">Ausgaben</td>
+                                        <td class="align-right" th:text="${overview.expenses}">0 €</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <td class="font-bold" th:text="#{overview.nrEvents}">Veranstaltungen</td>
+                                            <td class="align-right" th:text="${overview.nrEvents}">0</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="font-bold" th:text="#{overview.nrMovieEvents}">Filmveranstaltungen</td>
+                                            <td class="align-right" th:text="${overview.nrMovieEvents}">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold" th:text="#{overview.visitorsTotal}">Besucher gesamt</td>
+                                            <td class="align-right" th:text="${overview.visitorsTotal}">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold" th:text="#{overview.visitorsNormal}">Normal</td>
+                                            <td class="align-right" th:text="${overview.visitorsNormal}">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold" th:text="#{overview.visitorsReduced}">Ermäßigt</td>
+                                            <td class="align-right" th:text="${overview.visitorsReduced}">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold" th:text="#{overview.visitorsFree}">Kostenlos</td>
+                                            <td class="align-right" th:text="${overview.visitorsFree}">0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container month-scroller">
+                <div class="container" id="chart-container">
+                    <canvas id="chart1"></canvas>   
+                    <canvas id="chart2"></canvas>   
+                </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="template :: footer"></footer>
+    </div>
+
+    <script th:src="@{/webjars/jquery/jquery.min.js}"
+            src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+            src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/webjars/chartjs/Chart.min.js}"
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script th:inline="javascript">
+        var sales = [];
+        var expenses = [];
+        var lables = [];
+        var events = [];
+
+        /*[# th:each="overview : ${overviewList}"]*/
+        sales.push("[(${overview.sales})]");
+        expenses.push("[(${overview.expenses})]");
+        lables.push("[(#{${overview.month}})]\n[(${overview.year})]");
+        events.push("[(${overview.nrEvents})]");
+        /*[/]*/
+
+        sales.reverse();
+        expenses.reverse();
+        lables.reverse();
+        events.reverse();
+        
+        var ctx = document.getElementById('chart1').getContext('2d');
+        var chart1 = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: lables,
+                datasets: [{
+                                label: 'Umsatz',
+                                data: sales,
+                                backgroundColor: 'rgba(0, 255, 0, 0.8)',
+                                borderColor: 'rgba(0, 195, 0, 0.8)',
+                                borderWidth: 2,
+                                fill:false,
+                                type: 'line'
+                            }, {
+                                label: 'Veranstaltungen',
+                                data: events,
+                                backgroundColor: 'rgba(130, 0, 0, 0.8)',
+                                borderColor: 'rgba(0, 0, 0, 1)',
+                                borderWidth: 1
+                            }
+                            ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+
+        var ctx = document.getElementById('chart2').getContext('2d');
+        var cart2 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: lables,
+                datasets: [{
+                                label: 'Ausgaben',
+                                data: expenses,
+                                backgroundColor: 'rgba(255, 0, 0, 1)',
+                                borderColor: 'rgba(255, 0, 0, 1)',
+                                borderWidth: 2,
+                                fill:false,
+                                type: 'line'
+                            }, {
+                                label: 'Umsatz',
+                                data: sales,
+                                backgroundColor: 'rgba(0, 255, 0, 0.8)',
+                                borderColor: 'rgba(0, 255, 0, 0.8)',
+                                borderWidth: 2,
+                                fill:false
+                            }
+                            ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        </script>
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

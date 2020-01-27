@@ -1,0 +1,140 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+
+            <div id="archive-header">
+                <div class="row">
+                    <div class="col" id="heading-col">
+                        <h3 id="content-heading" th:text="#{booking.overview.bookings}">Aktuelle Buchungen</h3>
+                        <a th:href="@{/createBooking}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                    </div>
+                    <div class="col" id="search-col">
+                        <form method="post" th:action="@{/bookings}">
+                            <input type="text" name="input" placeholder="SUCHEN" th:attr="value = ${input}">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- load previous or next bookings -->
+            <div class="row">
+                <div class="col">
+                    <h6>
+                        <a th:if="${page} > 1" th:href="@{/bookings(sort=${sortedBy}, asc=${asc}, page=${page} - 1, input=${input})}">
+                            <i class="fas fa-angle-double-left"></i>
+                            <th:block th:text="' ' + #{booking.load.previous}"/>
+                        </a>
+                        <th:block th:if="not ${lastPage}" th:text="'  |  '"/>
+                        <a th:if="not ${lastPage}" th:href="@{/bookings(sort=${sortedBy}, asc=${asc}, page=${page} + 1, input=${input})}">
+                            <th:block th:text="#{booking.load.next} + ' '"/>
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </h6>
+                </div>
+            </div>
+
+            <div class="row kik-table-header ff-col-710">
+                <div class="col flex-2">
+                    <div class="row">
+                        <div class="col">
+                            <h4><th:block th:text="#{booking.overview.movieTitle}"/><a class="fas fa-sort" th:href="@{/bookings(sort=movie.germanName, asc=${sortedBy}=='movie.germanName'?not${asc}:true, page=${page}, input=${input})}"></a></h4>
+                        </div>
+                        <div class="col">
+                            <h6><th:block th:text="#{booking.overview.tbNumber}"/><a class="fas fa-sort" th:href="@{/bookings(sort=tbNumber, asc=${sortedBy}=='tbNumber'?not${asc}:true, page=${page}, input=${input})}"></a></h6>
+                            <h6><th:block th:text="#{booking.overview.distributor}"/><a class="fas fa-sort" th:href="@{/bookings(sort=distributor.name, asc=${sortedBy}=='distributor.name'?not${asc}:true, page=${page}, input=${input})}"></a></h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <h4><th:block th:text="#{booking.overview.timeSpan}"/><a class="fas fa-sort" th:href="@{/bookings(sort=startDate, asc=${sortedBy}=='startDate'?not${asc}:true, input=${input})}"></a></h4>
+                </div>
+                <div class="col">
+                    <h4><th:block th:text="#{booking.overview.events}"/><a class="fas"></a></h4>
+                </div>
+            </div>
+
+            <div class="row" th:each="booking : ${bookings}">
+                <div class="row kik-card contains-thumbnail" th:classappend="${booking.getColourString()}">
+                    <div class="col title img">
+                        <div class="d-inline-block">
+                            <a class="thumbnail-link" th:href="@{/bookings/booking(id=${booking.id})}">
+                                <img class="table-img thumbnail" style="height: 75px;" th:src="@{/movies/image/{id}(id=${booking.movie.pictureId})}"/>
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </div>
+                        <div class="d-inline-block">
+                            <a th:href="@{/bookings/booking(id=${booking.id})}">
+                                <h4 th:text="${booking.movie.germanName}">Filmtitel</h4>
+                                <h6 th:text="${booking.tbNumber} + ' - ' + ${booking.distributor.name}">TB-Nummer - Verleih</h6>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <p th:text="'vom ' + ${#temporals.format(booking.startDate, 'dd.MM.yyyy')}">vom  24.12.2019</p>
+                        <p th:text="'bis ' + ${#temporals.format(booking.endDate, 'dd.MM.yyyy')}">bis 31.12.2019</p>
+                    </div>
+                    <div class="col">
+                        <p th:text="'abgeschlossen: ' + ${booking.finishedEvents().size()}">abgeschlossen: XX</p>
+                        <p th:text="'gesamt: ' + ${booking.events.size()}">gesamt: XX</p>
+                    </div>
+                </div>
+                <th:block th:switch="${booking.getColourString()}">
+                    <th:block th:case="'red'"><div th:replace="template :: border-tooltip(text=#{booking.overview.red})"></div></th:block>
+                    <th:block th:case="'orange'"><div th:replace="template :: border-tooltip(text=#{booking.overview.orange})"></div></th:block>
+                    <th:block th:case="'green'"><div th:replace="template :: border-tooltip(text=#{booking.overview.green})"></div></th:block>
+                    <th:block th:case="*"><div th:replace="template :: border-tooltip(text=#{booking.overview.empty})"></div></th:block>
+                </th:block>
+            </div>
+
+            <!-- load previous or next bookings -->
+            <div class="row">
+                <div class="col">
+                    <h6>
+                        <a th:if="${page} > 1" th:href="@{/bookings/current(sort=${sortedBy}, asc=${asc}, page=${page} - 1, input=${input})}">
+                            <i class="fas fa-angle-double-left"></i>
+                            <th:block th:text="' ' + #{booking.load.previous}"/>
+                        </a>
+                        <th:block th:if="not ${lastPage}" th:text="'  |  '"/>
+                        <a th:if="not ${lastPage}" th:href="@{/bookings/current(sort=${sortedBy}, asc=${asc}, page=${page} + 1, input=${input})}">
+                            <th:block th:text="#{booking.load.next} + ' '"/>
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </h6>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

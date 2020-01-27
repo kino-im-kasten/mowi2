@@ -1,0 +1,8 @@
+.table{
+    alignment: center;
+    width: max-content;
+}
+td{
+    text-align: center;
+    align-content: center;
+}

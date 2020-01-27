@@ -1,0 +1,71 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+
+            <!-- User Table Head-->
+            <div class="row kik-table-header movie">
+                <div class="col flex-2">
+                    <h4 >Deine Jobs<a class="fas fa-sort"></a></h4>
+                </div>
+            </div>
+
+            <!-- Events that have the user as a worker-->
+            <div th:each="event : ${eventList}">
+                <div class="row kik-table-header movie">
+                    <div class="col flex-2">
+                        <h4 th:text="${event.getDate()} + ':  '+ ${event.getFullyQualifiedName()}">eventname<a class="fas fa-sort" ></a></h4>
+                    </div>
+                    <div>
+                        <form th:if="${event instanceof T(kik.event.data.movieEvent.MovieEvent)}" method="post" th:action="@{/movieEvents/}">
+                            <input id="input" type="hidden" name="input" th:attr="value = ${event.getFullyQualifiedName()}">
+                            <button type="submit" class="btn btn-secondary" th:text="#{event.go_to}">zum event</button>
+                        </form>
+                        <form th:if="${event instanceof T(kik.event.data.specialEvent.SpecialEvent)}" method="post" th:action="@{/specialEvents/}">
+                            <input id="input" type="hidden" name="input" th:attr="value = ${event.getFullyQualifiedName()}">
+                            <button type="submit" class="btn btn-secondary" th:text="#{event.go_to}">zum event</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Jobs of the user in the event-->
+                <div th:if="${userJob.worker==user}" class="row kik-card" th:each="userJob : ${event.getDutyPlan().getAssignedJobs()}">
+                    <div class="col" th:text="${userJob.jobName}"></div>
+                    <div class="col" th:unless="${userJob.jobDescription.isEmpty()}" th:text="${userJob.jobDescription}"></div>
+                    <div class="col" th:text="#{jobs.start_time} + ' ' + ${event.getStart().getHour() - 1} + ':' + ${event.getStart().getMinute()}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

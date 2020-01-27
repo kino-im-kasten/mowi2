@@ -1,0 +1,101 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <title>
+        <th:block th:text="#{event.title.details}"/>
+    </title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left"></ul>
+        <div id="content-wrapper">
+            <!-- HEADING -->
+            <div class="col" id="heading-col">
+                <h3 th:text="#{movieEvent.details.heading}"></h3>
+                <a th:href="@{/specialEvents/edit/{id}/?redirectTo=2&specialEventId={id}(id=${specialEvent.id})}"
+                   th:title="#{movie.overview.edit}">
+                    <i class="fas fa-pen"></i>
+                </a>
+            </div>
+            <!-- DETAILS -->
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <!-- TYPE -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.type}"></h5>
+                    <p th:text="${{specialEvent.typeAsString}}"></p>
+                </div>
+                <!-- FQN -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.fqn}"></h5>
+                    <p th:text="${{specialEvent.fullyQualifiedName}}"></p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <!-- PUBLICITY -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.publicity}"></h5>
+                    <p th:text="${{specialEvent.eventPublicityAsString}}"></p>
+                </div>
+                <!-- PLANNING STATUS -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.status}"></h5>
+                    <p th:text="${{specialEvent.planningStatusAsString}}"></p>
+                </div>
+                <!-- DATE -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.date}"></h5>
+                    <p th:text="${{specialEvent.date}}"></p>
+                </div>
+                <!-- TIME -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.start}"></h5>
+                    <p th:text="${{specialEvent.start}} + ' Uhr'"></p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <!-- DURATION -->
+                <!--
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.duration}"></h5>
+                    <p th:text="${{specialEvent.duration}} + ' Minuten'"></p>
+                </div>
+                -->
+                <!-- EXPECTED END -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{movieEvent.details.expectedEnd}"></h5>
+                    <p th:text="${{specialEvent.expectedEnd}} + ' Uhr'"></p>
+                </div>
+            </div>
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{specialEvent.details.description}"></h5>
+                    <p th:text="${{specialEvent.description}}"></p>
+                </div>
+            </div>
+            <br/>
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+</html>

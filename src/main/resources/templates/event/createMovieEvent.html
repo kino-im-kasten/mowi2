@@ -1,0 +1,149 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="de">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <title>
+        <th:block th:text="#{event.title.createMovieEvent}"/>
+    </title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left"></ul>
+        <div id="content-wrapper">
+            <div class="container form-container">
+                <!-- HEADING -->
+                <h5>
+                    <th:block th:text="#{movieEvent.create.newMovieEvent}"/>
+                </h5>
+                <br/>
+                <!-- FORM FOR CREATING A MOVIEEVENT -->
+                <form method="post"
+                      class="kik-form"
+                      id="form"
+
+                      th:action="@{/movieEvents/createMovieEvent/}"
+                      th:object="${movieEventForm}">
+
+                    <!-- BOOKING -->
+                    <div class="form-group">
+                        <label for="bookingID" th:text="#{movieEvent.create.booking}"></label>
+                        <select class="form-control"
+                                id="bookingID"
+                                name="bookingID"
+                                required="required"
+
+                                th:field="*{bookingID}"
+                                th:classappend="${#fields.hasErrors('bookingID')} ? 'is-invalid'"
+                                th:selected="1">
+                            <option th:each="booking : ${bookings}"
+                                    th:value="${{booking.IDAsInt}}"
+                                    th:text="${{booking.displayName}}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback"
+                             th:errors="*{bookingID}"
+                             th:text="#{movieEvent.create.errors.booking}">Etwas stimmt mit der Auswahl der Buchung nicht!
+                        </div>
+                    </div>
+
+                    <!-- PUBLICITY -->
+                    <div class="form-group">
+                        <p th:text="#{specialEvent.create.publicity}"></p>
+                        <label th:for="typePublic"></label>
+                        <input id="typePublic"
+                               type="radio"
+
+                               th:field="*{eventPublicity}"
+                               th:value="PUBLIC"
+                               th:text="#{event.create.publicity.public}"
+                               th:classappend="${#fields.hasErrors('eventPublicity')} ? 'is-invalid'"/>
+                        <label th:for="typePrivate"></label>
+                        <input id="typePrivate"
+                               type="radio"
+
+                               th:field="*{eventPublicity}"
+                               th:value="PRIVATE"
+                               th:text="#{event.create.publicity.private}"
+                               th:classappend="${#fields.hasErrors('eventPublicity')} ? 'is-invalid'"/>
+                    </div>
+
+                    <!-- ADDITIONAL NAME -->
+                    <div class="form-group">
+                        <label for="additionalName" th:text="#{movieEvent.create.additionalName}"></label>
+                        <input class="form-control"
+                               id="additionalName"
+                               name="additionalName"
+                               type="text"
+
+                               th:field="*{additionalName}"
+                               th:classappend="${#fields.hasErrors('additionalName')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback"
+                             th:errors="*{additionalName}"
+                             th:text="#{movieEvent.create.errors.additionalName}">Etwas stimmt mit dem zusätzlichen Namen nicht!
+                        </div>
+                    </div>
+
+                    <!-- DATE -->
+                    <div class="form-group">
+                        <label for="date" th:text="#{movieEvent.create.date}"></label>
+                        <input class="form-control"
+                               id="date"
+                               name="date"
+                               type="date"
+                               required="required"
+
+                               th:field="*{date}"
+                               th:classappend="${errors?.hasFieldErrors('date')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:text="#{movieEvent.create.errors.date}"></div>
+                    </div>
+
+                    <!-- TIME -->
+                    <div class="form-group">
+                        <label for="start" th:text="#{movieEvent.create.start}"></label>
+                        <input class="form-control"
+                               id="start"
+                               name="start"
+                               type="time"
+                               required="required"
+
+                               th:field="*{start}"
+                               th:classappend="${#fields.hasErrors('start')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback"
+                             th:errors="*{start}"
+                             th:text="#{movieEvent.create.errors.start}">Etwas stimmt mit der Auswahl der Startzeit nicht!
+                        </div>
+                    </div>
+                    <br/>
+
+                    <!-- SUBMIT -->
+                    <button type="submit" class="btn" th:text="#{movieEvent.create.submit}">SUBMIT</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+</html>

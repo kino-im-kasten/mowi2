@@ -1,0 +1,122 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div id="main-wrapper">
+        <nav th:replace="template :: navbar-top"></nav>
+        <div class="wrapper">
+            <ul th:replace="template :: navbar-left" ></ul>
+            <div id="content-wrapper">
+                <!-- SPECIFIC CONTENT GOES HERE -->
+                <div id="archive-header">
+                    <div class="row">
+                        <div class="col" id="heading-col">
+                            <h3 th:text="#{movie.overview.movie}" >Filme</h3>
+                            <a th:href="@{/createMovie}" sec:authorize="hasRole('ORGA')"><i class="fas fa-plus"></i></a>
+                        </div>
+                        <div class="col" id="search-col">
+                            <form method="post" th:action="@{/movies}">
+                                <input type="text" name="input" placeholder="SUCHEN" th:attr="value = ${input}">
+                                <button type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row kik-table-header">
+                    <div class="col flex-2">
+                        <th:block th:text="#{movie.overview.title}">Filmtitel</th:block>
+                        <a class="fas fa-sort" th:href="@{/movies(sort=germanName, asc=${sortedBy}=='germanName'?not${asc}:true)}"></a>
+                    </div>
+                    <div class="col">
+                        <th:block th:text="#{movie.overview.year}">Jahr</th:block>
+                        <a class="fas fa-sort" th:href="@{/movies(sort=releaseYear, asc=${sortedBy}=='releaseYear'?not${asc}:true)}"></a>
+                    </div>
+                    <div class="col">
+                        <th:block th:text="#{movie.overview.runtime}">Laufzeit</th:block>
+                        <a class="fas fa-sort" th:href="@{/movies(sort=runTimeInMin, asc=${sortedBy}=='runTimeInMin'?not${asc}:true)}"></a>
+                    </div>
+                </div>
+
+
+                <div class="row kik-card contains-thumbnail" th:each="movie : ${movies}">
+                    <div class="col title img">
+                        <div class="d-inline-block">
+                            <a th:href="@{/movies/details/{id}(id=${movie.id})}" class="thumbnail-link">
+                                <img class="table-img thumbnail" th:src="@{/movies/image/{id}(id=${movie.pictureId})}" src="/img/cat.jpg" />
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </div>
+                        <a th:href="@{/movies/details/{id}(id=${movie.id})}" class="thumbnail-link">
+                            <div class="d-inline-block">
+                                <h4 th:text="${movie.germanName}">Filmtitel</h4>
+                                <h6 th:text="${movie.originalName}">Originaltitel</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <p th:text="${movie.releaseYear}">Produktions-Jahr</p>
+                    </div>
+                    <div class="col">
+                        <p th:text="${movie.runTimeInMin}">Laufzeit</p>
+                    </div>
+                    <div class="top-right-floater">
+                        <form th:action="@{/movies/edit/{id}(id=${movie.id})}" sec:authorize="hasRole('ORGA')">
+                            <button th:title="#{movie.overview.edit}">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                        </form>
+
+
+                        <div th:if="${movie.linkedEvents.isEmpty()}" th:id="'any-modal-caller-' + ${movie.id}" sec:authorize="hasRole('ORGA')">
+                            <p class="init d-none" th:text="0" th:href="@{/movies/delete/{id}(id=${movie.id})}"></p>
+                            <p class="attr d-none" type="hidden" name="to-delete" th:text="${movie.germanName} + ' (' + ${movie.releaseYear} + ')'"></p>
+                            <button th:title="#{movie.overview.delete}" th:attr="onclick='anyModal(' + ${movie.id} + ')'">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="template :: any-modal"></div>
+    <div id="modal-helper-0" class="d-none">
+        <div class="modal-title">Film Löschen</div>
+        <div class="modal-body">
+            <p>Du bist gerade dabei einen <b>Film</b> zu löschen.</p>
+            <p>Wenn du fortsetzt wird <b class="to-delete"></b> gelöscht.</p>
+        </div>
+        <div class="modal-ok" th:text="#{kik.deletion.delete}"></div>
+        <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+    </div>
+
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

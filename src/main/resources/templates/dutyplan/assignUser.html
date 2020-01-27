@@ -1,0 +1,64 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+
+            <div class="form-container">
+                <form method="post" role="form" class="kik-form" id="form" th:action="@{/dutyplan/assign/(id=${id},redirectTo=${redirectTo})}" th:object="${form}" enctype="multipart/form-data">
+
+                    <div class="form-group">
+                        <label for="user" th:text="#{dutyPlan.UserToBeAssigned}"></label>
+                        <select class="form-control" id="user" name="user" th:field="*{user}"
+                                th:errorclass="fieldError" required="required" th:selected="1">
+                            <option th:each="user : ${users}" th:value="${user.getId()}" th:text="${user.getName()}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="job" th:text="#{dutyPlan.JobToGetAssigned}"></label>
+                        <select class="form-control" id="job" name="job" th:field="*{job}"
+                                th:errorclass="fieldError" required="required" th:selected="1">
+                            <option th:each="selJob : ${jobs}" th:value="${selJob.getId()}" th:text="${selJob.getJobName()}"></option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn" th:text="#{dutyPlan.signIn}">SUBMIT</button>
+
+                    <a th:href="@{/dutyplan/newJob/{id}/(id=${id},redirectTo=${redirectTo})}" class="btn btn-dark mx-4" th:text="#{dutyPlan.newJob}">New Job</a>
+                    <a th:href="@{/dutyplan/signOut/(dpId=${id},redirectTo=${redirectTo})}" class="btn btn-warning" th:text="#{dutyPlan.signOut}"></a>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

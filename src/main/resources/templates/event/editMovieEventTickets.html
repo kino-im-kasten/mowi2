@@ -1,0 +1,355 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    <title>
+        <th:block th:text="#{event.title.tickets}"/>
+    </title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left"></ul>
+        <div id="content-wrapper">
+            <div class="container form-container">
+                <!-- HEADING -->
+                <h4 th:text="#{movieEvent.tickets.heading}"></h4>
+                <br/>
+                <!-- FORM FOR EDITING TICKETS -->
+                <form method="post"
+                      role="form"
+                      class="kik-form"
+                      id="form"
+
+                      th:action="@{/movieEvents/tickets/{id}/?redirectTo={rt}&movieEventId={id}(id=${movieEvent.id}, rt=${redirectTo})}"
+                      th:object="${ticketsForm}">
+
+                    <!-- NORMAL -->
+                    <div class="row ticket-row">
+                        <div class="sorter col">
+                            <div class="sorter row">
+                                <div class="form-group col">
+                                    <h6 th:text="#{movieEvent.tickets.normal}"></h6>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="normalPrice" th:text="#{movieEvent.tickets.price}"></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" th:text="'€'">€</span>
+                                        </div>
+                                        <input id="normalPrice"
+                                               name="normalPrice"
+                                               class="form-control"
+                                               tabindex="-1"
+
+                                               type="number"
+                                               min="0.00"
+                                               max="10000.00"
+                                               step="0.01"
+
+                                               onchange="updateTickets(0);"
+
+                                               th:field="*{normalPrice}"
+                                               th:classappend="${#fields.hasErrors('normalPrice')} ? 'is-invalid'"/>
+                                        <div class="invalid-feedback"
+                                             th:errors="*{normalPrice}"
+                                             th:text="#{movieEvent.tickets.errors.normalPrice}">Etwas stimmt mit dem normalen Preis nicht!
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sorter col">
+                            <div class="sorter row">
+                                <div class="form-group col">
+                                    <label for="cardNormalStartNumber" th:text="#{movieEvent.tickets.start}"></label>
+                                    <input id="cardNormalStartNumber"
+                                           name="cardNormalStartNumber"
+                                           class="form-control"
+
+                                           type="number"
+                                           min="0"
+                                           max="1000000000"
+                                           step="1"
+
+                                           onchange="updateTickets(0)"
+
+                                           th:field="*{cardNormalStartNumber}"/>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="cardNormalEndNumber" th:text="#{movieEvent.tickets.end}"></label>
+                                    <input id="cardNormalEndNumber"
+                                           name="cardNormalEndNumber"
+                                           class="form-control"
+
+                                           type="number"
+                                           min="0"
+                                           max="1000000000"
+                                           step="1"
+
+                                           onchange="updateTickets(0)"
+
+                                           th:field="*{cardNormalEndNumber}"
+                                           th:classappend="${errors?.hasFieldErrors('cardNormalEndNumber')} ? 'is-invalid'"/>
+                                    <div class="invalid-feedback" th:text="#{movieEvent.tickets.errors.cardNormalNumber}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sorter col">
+                            <div class="sorter row">
+                                <div class="form-group col">
+                                    <label for="normalCount" th:text="#{movieEvent.tickets.count}"></label>
+                                    <input id="normalCount"
+                                           name="normalCount"
+                                           class="form-control"
+
+                                           th:value="*{normalCount}"
+                                           tabindex="-1"
+
+                                           readonly>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="normalSum" th:text="#{movieEvent.tickets.sum}"></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" th:text="'€'">€</span>
+                                        </div>
+                                        <input id="normalSum"
+                                               name="normalSum"
+                                               class="form-control"
+
+                                               value="-"
+                                               tabindex="-1"
+
+                                               th:value="*{normalSum}"
+
+                                               readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REDUCED -->
+                    <div class="row ticket-row">
+                        <div class="sorter col">
+                            <div class="sorter row">
+                                <div class="form-group col">
+                                    <h6 th:text="#{movieEvent.tickets.reduced}"></h6>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="reducedPrice" th:text="#{movieEvent.tickets.price}"></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" th:text="'€'">€</span>
+                                        </div>
+                                        <input id="reducedPrice"
+                                               name="reducedPrice"
+                                               class="form-control"
+                                               tabindex="-1"
+
+                                               type="number"
+                                               min="0.00"
+                                               max="10000.00"
+                                               step="0.01"
+
+                                               onchange="updateTickets(1)"
+
+                                               th:field="*{reducedPrice}"
+                                               th:classappend="${#fields.hasErrors('reducedPrice')} ? 'is-invalid'"/>
+                                        <div class="invalid-feedback"
+                                             th:errors="*{reducedPrice}"
+                                             th:text="#{movieEvent.tickets.errors.reducedPrice}">Etwas stimmt mit dem ermäßigten Preis nicht!
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sorter col">
+                            <div class="sorter row">
+                                <div class="form-group col">
+                                    <label for="cardReducedStartNumber" th:text="#{movieEvent.tickets.start}"></label>
+                                    <input id="cardReducedStartNumber"
+                                           name="cardReducedStartNumber"
+                                           class="form-control"
+
+                                           type="number"
+                                           min="0"
+                                           max="1000000000"
+                                           step="1"
+
+                                           onchange="updateTickets(1)"
+
+                                           th:field="*{cardReducedStartNumber}"/>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="cardReducedEndNumber" th:text="#{movieEvent.tickets.end}"></label>
+                                    <input id="cardReducedEndNumber"
+                                           name="cardReducedEndNumber"
+                                           class="form-control"
+
+                                           type="number"
+                                           min="0"
+                                           max="1000000000"
+                                           step="1"
+
+                                           onchange="updateTickets(1)"
+
+                                           th:field="*{cardReducedEndNumber}"
+                                           th:classappend="${errors?.hasFieldErrors('cardReducedEndNumber')} ? 'is-invalid'"/>
+                                    <div class="invalid-feedback" th:text="#{movieEvent.tickets.errors.cardReducedNumber}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sorter col">
+                            <div class="sorter row">
+                                <div class="form-group col">
+                                    <label for="reducedCount" th:text="#{movieEvent.tickets.count}"></label>
+                                    <input id="reducedCount"
+                                           name="reducedCount"
+                                           class="form-control"
+
+                                           th:value="*{reducedCount}"
+                                           tabindex="-1"
+
+                                           readonly>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="reducedSum" th:text="#{movieEvent.tickets.sum}"></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" th:text="'€'">€</span>
+                                        </div>
+                                        <input id="reducedSum"
+                                               name="reducedSum"
+                                               class="form-control"
+
+                                               th:value="*{reducedSum}"
+                                               tabindex="-1"
+
+                                               readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FREE -->
+                    <div class="row ticket-row">
+                        <div class="sorter col">
+                            <div class="sorter row">
+                                <div class="form-group col">
+                                    <h6 th:text="#{movieEvent.tickets.free}"></h6>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="price-2" th:text="#{movieEvent.tickets.price}"></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" th:text="'€'">€</span>
+                                        </div>
+                                        <input id="price-2"
+                                               name="price-2"
+                                               class="form-control"
+                                               tabindex="-1"
+
+                                               readonly
+                                               value="0,00"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="sorter col">
+                            <div class="sorter row">
+                                <div class="form-group col">
+                                    <label for="cardFreeAmount" th:text="#{movieEvent.tickets.freeAmount}"></label>
+                                    <input id="cardFreeAmount"
+                                           name="cardFreeAmount"
+                                           class="form-control"
+
+                                           type="number"
+                                           min="0"
+                                           max="1000000000"
+                                           step="1"
+
+                                           th:field="*{cardFreeAmount}"
+                                           th:classappend="${#fields.hasErrors('cardFreeAmount')} ? 'is-invalid'"/>
+                                </div>
+                                <div class="invalid-feedback"
+                                     th:errors="*{cardFreeAmount}"
+                                     th:text="#{movieEvent.tickets.errors.cardFreeAmount}">Etwas stimmt mit der freien Kartenzahl nicht!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sorter col">
+                            <div class="sorter row">
+                            </div>
+                        </div>
+                    </div>
+
+                    <br/>
+                    <!-- SUBMIT -->
+                    <button type="submit" class="btn" th:text="#{movieEvent.create.submit}">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script>
+    function updateTickets(a) {
+        let price, start, end, countInput, sumInput;
+        switch (a) {
+            case 0:
+                price = parseFloat(document.getElementById('normalPrice').value);
+                start = parseInt(document.getElementById('cardNormalStartNumber').value);
+                end = parseInt(document.getElementById('cardNormalEndNumber').value);
+                countInput = document.getElementById('normalCount');
+                sumInput = document.getElementById('normalSum');
+                break;
+            case 1:
+                price = parseFloat(document.getElementById('reducedPrice').value);
+                start = parseInt(document.getElementById('cardReducedStartNumber').value);
+                end = parseInt(document.getElementById('cardReducedEndNumber').value);
+                countInput = document.getElementById('reducedCount');
+                sumInput = document.getElementById('reducedSum');
+                break;
+            default:
+                return;
+        }
+
+        let count = end - start + 1;
+        if (end === 0 && start === 0) {
+            count = 0;
+        }
+
+        const sum = price * count;
+        if (count >= 0 && price >= 0 && start >= 0 && end >= 0) {
+            countInput.value = count.toString();
+            sumInput.value = sum.toFixed(2);
+        } else {
+            countInput.value = '0.00';
+            sumInput.value = '0.00';
+        }
+    }
+</script>
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+</html>

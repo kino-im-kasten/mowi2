@@ -1,0 +1,45 @@
+
+== Rest
+
+Um auf Daten im Json-Format zuzugreifen (rest) gibt es gegenwärtig folgende Möglichkeiten:
+ 
+Ein Event per Id
+
+- Format: `/rest/event?id=[id]`
+- Bsp: `/rest/event?id=1`
+
+Alle in der Datenbank existierenden Events
+
+- `/rest/eventList`
+
+Eine bestimmte Anzahl an Events ab einer Zeit
+
+- Format: `/rest/eventsAfter?amount=[Amount]&start=[Date]`
+- Bsp: `/rest/eventsAfter?amount=1&start=2019-12-03T20:15`
+
+Events zwischen einem Zeitraum 
+
+- Format: `/rest/eventsBetween?start=[Date]&end=[Date]`
+- Bsp: `/rest/eventsBetween?start=2019-12-03T20:15&end=2020-12-03T20:15`
+
+Einen Diensplan über eine Event-Id
+
+- Format: `/rest/dutyplan?eventId=[id]`       
+- Bsp: `/rest/dutyplan?eventId=2`
+
+Alle Veranstaltungen für einen Nutzer in einem Zeitraum
+
+- Format: `/rest/eventsForUser?uuid=[UUID]&start=[DATE]&end=[DATE]`
+- Bsp: `/rest/eventsForUser?uuid=61cf7ce7-283f-45a4-ae19-52f6a600c5ef&start=2019-12-03T20:15&end=2020-12-03T20:15`
+
+
+== Bild
+
+Ein Filmplakat ist in einem `Movie` Objekt mit seiner Id hinterlegt (`pictureId`).
+Um ein Bild abzurufen, muss nur eine Angfrage an `/movies/image/[pictureId]` geschickt werden.
+
+== Weitere Informationen
+
+- Alle Zeiten sind als lokale Zeit zu verstehen.
+- Alle Zugriffe sind als GET-Request durchzuführen.
+- Die UUID eines Nutzers ...

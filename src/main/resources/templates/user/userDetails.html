@@ -1,0 +1,151 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div id="main-wrapper">
+    <nav th:replace="template :: navbar-top"></nav>
+    <div class="wrapper">
+        <ul th:replace="template :: navbar-left" ></ul>
+        <div id="content-wrapper">
+
+            <!-- Exception errors-->
+            <div th:if="${exception?.equals('UserNotFound')}" th:text="#{user.error.no_user_found}" class="alert alert-danger" role="alert"></div>
+            <div th:if="${exception?.equals('UserTypeNotFound')}" th:text="#{user.error.no_usertype_found}" class="alert alert-danger" role="alert"></div>
+            <div th:if="${exception?.equals('AdminDanger')}" th:text="#{user.error.admin_danger}" class="alert alert-danger" role="alert"></div>
+
+
+            <div class="container d-flex flex-wrap align-content-start detail-container">
+
+                <!-- Information -->
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{user.details.username}">Username</h5>
+                    <p th:text="${user.name}">Hans</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{user.details.usertype}">UserType</h5>
+                    <p th:text="${user.userType.name}">Orga</p>
+                </div>
+                <div class="col p-3 m-1">
+                    <h5 th:text="#{user.details.lockstatus}">Freischaltstatus</h5>
+                    <p th:if="${user.isUnlocked()}" th:text="#{user.unlock_account.unlocked}">freigeschaltet</p>
+                    <p th:unless="${user.isUnlocked()}" th:text="#{user.unlock_account.locked}">blockiert</p>
+                </div>
+                <div th:unless="${user.isUnlocked()}" class="col p-3 m-1">
+                    <h5 th:text="#{user.details.unlockpassword}">Freischaltpasswort</h5>
+                    <p th:text="${user.unlockPassword}">123456</p>
+                </div>
+
+                <!-- change user name form-->
+                <div th:if="${anyUser}" class="col p-3 m-1 form-container">
+                    <form class="kik-form" th:method="post" th:action="@{/user/details/any/{userName}/changeUserName(userName=${user.name})}" th:object="${changeUserNameForm}" >
+
+                        <div class="form-group">
+                            <label th:text="#{user.details.change_user_name}" for="newUserName"></label>
+                            <input class="form-control" th:classappend="${errors?.hasFieldErrors('newUserName')} ? 'is-invalid'" id="newUserName" name="newUserName" type="text" required="required"/>
+
+                            <input type="hidden" th:value="${user.name}">
+                            <div class="invalid-feedback" th:text="#{user.create.already_exists_error}"></div>
+                        </div>
+
+                        <button class="btn" th:text="#{user.details.change_user_name.submit}">zurücksetzten</button>
+                    </form>
+                </div>
+
+                <!-- change user type form-->
+                <div th:if="${anyUser}" class="col p-3 m-1 form-container">
+                    <form class="kik-form" role="form" th:action="@{/user/changeUserType/{userName}(userName=${user.name})}" method="post" th:object="${changeUserTypeOfUserForm}">
+                        <div class="form-group">
+                            <label for="userTypeName" th:text="#{user.details.change_usertype}"></label>
+                            <select class="form-control" id="userTypeName" name="userTypeName">
+                                <option th:each="userType : ${userTypeList}" th:value="${userType.name}" th:text="${userType.name}">
+                                </option>
+                            </select>
+                        </div>
+                        <input id="userName" class="form-control" name="userName" type="hidden" th:value="${user.name}"/>
+                        <button type="submit"  class="btn" th:text="#{user.details.change_usertype.submit}">Update</button>
+                    </form>
+                </div>
+
+                <!-- change password form for admins (no old password required)-->
+                <div th:if="${anyUser}" class="col p-3 m-1 form-container">
+                    <form class="kik-form" role="form" th:method="post" th:action="@{/user/details/any/{userName}/resetPassword(userName=${user.name})}" th:object="${changePasswordForm}">
+
+                        <div class="form-group">
+                            <label th:text="#{user.details.change_password.new_password}" for="newPassword"></label>
+                            <input class="form-control" th:classappend="${errors?.hasFieldErrors('newPassword')} ? 'is-invalid'" id="newPassword" name="newPassword" type="password" required="required"/>
+                            <div class="invalid-feedback" th:text="#{user.details.change_password.new_password.not_secure}"></div>
+                        </div>
+
+                        <input id="oldPassword" class="form-control" name="oldPassword" type="hidden" value="will_not_be_used">
+                        <input id="currentUserName" class="form-control" name="currentUserName" type="hidden" value="will_not_be_used">
+
+                        <button class="btn" th:text="#{user.details.reset_password}">zurücksetzten</button>
+                    </form>
+                </div>
+
+                <!-- change password form (normal user)-->
+                <div th:unless="${anyUser}" class="col p-3 m-1 form-container">
+                    <form class="kik-form" role="form" th:action="@{/user/details/own/changePassword}" method="post" th:object="${changePasswordForm}">
+
+                        <div class="form-group">
+                            <label th:text="#{user.details.change_password.old_password}" for="oldPassword"></label>
+                            <input class="form-control" th:classappend="${errors?.hasFieldErrors('oldPassword')} ? 'is-invalid'" id="oldPassword" name="oldPassword" type="password" required="required"/>
+                            <div class="invalid-feedback" th:text="#{user.details.change_password.did_not_match_error}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label th:text="#{user.details.change_password.new_password}" for="newPassword"></label>
+                            <input class= "form-control" th:classappend="${errors?.hasFieldErrors('newPassword')} ? 'is-invalid'" id="newPassword" name="newPassword" type="password" required="required"/>
+                            <div class="invalid-feedback" th:text="#{user.details.change_password.new_password.not_secure}"></div>
+                        </div>
+
+                        <input type="hidden" id="currentUserName" name="currentUserName" th:value="${user.name}">
+
+                        <button th:text="#{user.details.change_password.submit}" type="submit"  class="btn" >Update</button>
+                    </form>
+                </div>
+
+                <!-- recover user (for deleted users)-->
+                <div th:if="${anyUser} and ${user.isDeleted()}" class="col p-3 m-1">
+                    <form class="form" role="form" th:action="@{/user/recoverUser/{userName}(userName = ${user.name})}" method="post">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-warning" th:text="#{user.details.recover_user}" name="foo" value="showDeleted">show deleted</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="container d-flex flex-wrap align-content-start">
+                    <div class="col p-3 m-1">
+                        <h5 th:text="#{user.details.uuid}">UUID</h5>
+                        <p th:text="${user.uuid}">61cf7ce7-283f-45a4-ae19-52f6a600c5ef</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="template :: footer"></footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

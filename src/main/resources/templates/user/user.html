@@ -1,0 +1,197 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+
+    <title>Kino im Kasten</title>
+
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/material-icons/iconfont/material-icons.css}" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div id="main-wrapper">
+        <nav th:replace="template :: navbar-top"></nav>
+        <div class="wrapper">
+            <ul th:replace="template :: navbar-left" ></ul>
+            <div id="content-wrapper">
+
+                <!-- SPECIFIC CONTENT GOES HERE -->
+
+                <!-- Exception errors-->
+                <div th:if="${exception?.equals('UserNotFound')}" th:text="#{user.error.no_user_found}" class="alert alert-danger" role="alert"></div>
+                <div th:if="${exception?.equals('UserTypeNotFound')}" th:text="#{user.error.no_usertype_found}" class="alert alert-danger" role="alert"></div>
+                <div th:if="${exception?.equals('AdminDanger')}" th:text="#{user.error.admin_danger}" class="alert alert-danger" role="alert"></div>
+
+
+                <!-- searchbar -->
+                <div id="archive-header">
+                    <div class="row">
+                        <div class="col" id="heading-col">
+                            <h2 th:text="#{user.overview.headline}" >Benutzer</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div th:text="${#session.getAttribute('showDeletedUsers') == null} ? #{user.overview.show_existing} : #{user.overview.show_deleted}">Gerade angezeigt: </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div  class="col">
+                            <table>
+                                <tr>
+                                    <!-- switch for deleted Users-->
+                                    <th>
+                                        <form class="form" role="form" th:action="@{/user/showDeletedUsers}" method="post">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn" th:classappend="${#session.getAttribute('showDeletedUsers') == null} ? 'btn-danger' : 'btn-success' "
+                                                        th:text="${#session.getAttribute('showDeletedUsers') == null} ? #{user.overview.change_to_deleted} : #{user.overview.change_to_existing}" name="foo" value="showDeleted">show deleted
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </th>
+
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Table Head-->
+                <div class="row kik-table-header movie">
+                    <div class="col flex-2">
+                        <h4 th:text="#{user.create.username}">Benutzername<a class="fas fa-sort"></a></h4>
+                    </div>
+                    <div class="col">
+                        <h4 th:text="#{user.overview.authentication}">BerechtigungsStatus<a class="fas fa-sort"></a></h4>
+                    </div>
+                    <div class="col">
+                        <h4 th:text="#{user.unlock_account.locked_status}">Freischaltstatus<a class="fas fa-sort"></a></h4>
+                    </div>
+                </div>
+
+                <!-- create user card-->
+
+                <form method="post" role="form" class="kik-form" th:action="@{/user/createNewUser}" th:object="${createNewUserForm}">
+                    <div class="row kik-card user">
+
+                        <div class="col title d-flex">
+
+                            <button type="submit" class="btn w-25 h-50 m-3 my-auto" th:text="#{user.create.submit}">Erstellen</button>
+
+                            <div class="form-group w-75">
+                                <label for="name" th:text="#{user.create.username}">Name</label>
+                                <input class="form-control" th:classappend="${errors?.hasFieldErrors('name')} ? 'is-invalid'" id="name" name="name" type="text" required="required"/>
+                                <div class="invalid-feedback" th:text="#{user.create.already_exists_error}"></div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="newUserTypeName">Berechtigungsstatus</label>
+                                <select class="form-control" th:classappend="${errors?.hasFieldErrors('newUserTypeName')} ? 'is-invalid'" id="newUserTypeName" name="newUserTypeName">
+                                    <option th:each="userType : ${userTypeList}" th:value="${userType.name}" th:text="${userType.name}" th:selected="${userType.name.equals('User')} ? 'selected'"></option>
+                                </select>
+                                <div class="invalid-feedback" th:text="#{user.error.no_usertype_found}"></div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="password" th:text="#{user.create.optional_password}">Passwort</label>
+                                <input class="form-control" th:classappend="${errors?.hasFieldErrors('password')} ? 'is-invalid'" id="password" name="password" type="password" />
+                                <div class="invalid-feedback" th:text="#{user.details.change_password.new_password.not_secure}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+
+                <!-- User Table Body-->
+                <div class="row kik-card user" th:each="user : ${userList}">
+
+                    <div class="col title">
+                        <a th:href="@{/user/details/any/{userName}(userName = ${user.name})}">
+                            <h4 th:text="${user.getName()}">Nutzername</h4>
+                        </a>
+                    </div>
+
+                    <div class="col">
+                        <h5 th:text="${user.userType.name}">Nutzertyp</h5>
+                    </div>
+
+                    <div class="col">
+                        <h5 th:if="${user.isUnlocked()}" th:text="#{user.unlock_account.unlocked}"></h5>
+                        <h5 th:unless="${user.isUnlocked()}" th:text="#{user.unlock_account.locked}"></h5>
+                    </div>
+
+                    <div class="top-right-floater">
+                        <!-- default options -->
+                        <div>
+                            <form th:action="@{/user/details/any/{userName}(userName = ${user.name})}">
+                                <button th:title="#{user.overview.details}"><i class="fas fa-pen" /></i></button>
+                            </form>
+
+                            <!-- safe deletion -->
+                            <div th:if="${#session.getAttribute('showDeletedUsers') == null}" th:id="'any-modal-caller-' + ${user.name}">
+                                <p class="init d-none" th:text="0" th:href="@{/user/delete/{name}/confirm(name=${user.name})}"></p>
+                                <p class="attr d-none" type="hidden" name="to-delete" th:text="${user.name} + ' (' + ${user.userType.name} + ')'"></p>
+                                <button th:title="#{user.overview.delete}" th:attr="onclick='anyModal(\'' + ${user.name} + '\')'">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+
+                            <!-- deletion (not recoverable) -->
+                            <div th:unless="${#session.getAttribute('showDeletedUsers') == null}" th:id="'any-modal-caller-' + ${user.name}">
+                                <p class="init d-none" th:text="1" th:href="@{/user/delete/{name}/confirmForever(name=${user.name})}"></p>
+                                <p class="attr d-none" type="hidden" name="to-delete" th:text="${user.name} + ' (' + ${user.userType.name} + ')'"></p>
+                                <button th:title="#{user.overview.delete}" th:attr="onclick='anyModal(\'' + ${user.name} + '\')'">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+        <div th:replace="template :: any-modal"></div>
+        <div id="modal-helper-0" class="d-none">
+            <div class="modal-title">Benutzer löschen</div>
+            <div class="modal-body">
+                <p>Du bist gerade dabei einen <b>Benutzer</b> zu löschen.</p>
+                <p>Wenn du fortsetzt wird <b class="to-delete"></b> in den Parpierkorp geworfen.</p>
+            </div>
+            <div class="modal-ok" th:text="#{kik.deletion.delete}"></div>
+            <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+        </div>
+        <div id="modal-helper-1" class="d-none">
+            <div class="modal-title">Benutzer endgültig löschen</div>
+            <div class="modal-body">
+                <p>Du bist gerade dabei einen <b>Benutzer</b> zu löschen</p>
+                <p>Wenn du fortsetzt wird <b class="to-delete"></b> <b th:text="#{user.overview.delete.forever}">endgültig</b> gelöscht.</p>
+            </div>
+            <div class="modal-ok" th:text="#{kik.deletion.delete}"></div>
+            <div class="modal-cancel" th:text="#{kik.deletion.cancel}"></div>
+        </div>
+        <footer th:replace="template :: footer"></footer>
+    </div>
+
+    <script th:src="@{/webjars/jquery/jquery.min.js}"
+        src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script th:replace="template :: scripts"></script>
+</body>
+
+</html>

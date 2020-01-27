@@ -1,0 +1,138 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <link rel="stylesheet" href="../../static/css/generatePDF.css" th:href="@{../../static/css/generatePDF.css}"/>
+
+    <title th:text="${booking.getMovie().getGermanName()}"></title>
+</head>
+<body>
+
+    <p align="right" th:text="${'Film:   ' + booking.movie.getGermanName()}"></p>
+    <p align="right" th:text="${'TB-Nummer:   ' + booking.tbNumber}"></p>
+    <p align="right">Kundennummer:  Kino im Kasten</p>
+    <p th:text="${booking.getDistributor().getName()}"></p>
+    <p th:text="${booking.getDistributor().getAddress()}"></p>
+    <p th:if="${booking.getDistributor().getPhoneNumber() != null}" th:text="${'per Fax an:   ' + booking.getDistributor().getPhoneNumber()}"></p>
+
+
+
+    <h1>Spielfilmsteuerabrechnung / Gutschrift</h1>
+    <h3>Vorstellungen</h3>
+    <!--Entries are events-->
+    <div id="entries" type="table" class="mx-auto">
+        <table class="ui celled table" border="0" width="100%">
+
+            <tr>
+                <th></th>
+                <th>Karten</th>
+                <th>ermäßigt</th>
+                <th></th>
+                <th></th>
+                <th>Karten</th>
+                <th>normal</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th>Datum</th>
+                <th>von</th>
+                <th>bis</th>
+                <th>Anz.</th>
+                <th>Preis    </th>
+                <th>von</th>
+                <th>bis</th>
+                <th>Anz.</th>
+                <th>Preis</th>
+                <th>Summe</th>
+            </tr>
+            <!-- THE EVENTS -->
+            <tr th:each="entry, it : ${entries}" th:with="index = ${it.count}">
+                <td th:text="${#temporals.format(entry.date, 'dd.MM.yyyy')}">date</td>
+                <td th:text="${entry.getTickets().getCardReducedStartNumber()}">start</td>
+                <td th:text="${entry.getTickets().getCardReducedEndNumber()}">end</td>
+                <td th:text="${entry.getTickets().getReducedCount()}">dif</td>
+                <td th:text="${#numbers.formatDecimal(entry.getTickets().getReducedPrice(), 1, 'COMMA', 2, 'POINT')}+'€'">3€</td>
+
+                <td th:text="${entry.getTickets().getCardNormalStartNumber()}">start</td>
+                <td th:text="${entry.getTickets().getCardNormalEndNumber()}">end</td>
+                <td th:text="${entry.getTickets().getNormalCount()}">dif</td>
+                <td th:text="${#numbers.formatDecimal(entry.getTickets().getNormalPrice(), 1, 'COMMA', 2, 'POINT')}+'€'">4€</td>
+
+                <td th:text="${#numbers.formatDecimal(((entry.getTickets().getNormalCount())*entry.getTickets().getNormalPrice()+(entry.getTickets().getReducedCount())*entry.getTickets().getReducedPrice()), 1, 'COMMA', 2, 'POINT')}+'€'">Summe</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td th:text="${'Gesamt'}">Gesamt</td>
+                <td th:text="${reducedCardSum}">#reducedCards</td> <!--Anzahl der ermäßigten Karten"-->
+                <td></td>
+                <td></td>
+                <td th:text="${'Gesamt'}">Gesamt</td>
+                <td th:text="${normalCardSum}">#normaleKarten</td><!--Anzahl der normalen Karten"-->
+                <td th:text="${'Netto-Erl&ouml;s'}">Netto-Erl&ouml;s</td>
+                <td th:text="${#numbers.formatDecimal(nettoSum, 1, 'COMMA', 2, 'POINT')}+'€'">Summe Netto</td><!--Summe Netto"-->
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>-7% MwSt.</td>
+                <td th:text="${#numbers.formatDecimal(MwStBruttoNetto, 1, 'COMMA', 2, 'POINT')}+'€'"></td> <!--Summe ohne MwSt-->
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td th:text="${'Brutto-Erl&ouml;s'}">Brutto-Erl&ouml;s</td>
+                <td th:text="${#numbers.formatDecimal(bruttoSum, 1, 'COMMA', 2, 'POINT')}+'€'"></td> <!--Summe Brutto-->
+            </tr>
+
+        </table>
+
+        <h3>Konditionen</h3>
+        <table>
+            <tr>
+                <th>Mindestgarantie</th>
+                <th>Prozentsatz</th>
+                <th>Fracht</th>
+                <th>Werbung</th>
+                <th>SPIO</th>
+                <th>Sonstiges</th>
+                <th>MwSt. 7%</th>
+                <th>Rechungssumme</th>
+            </tr>
+            <tr>
+                <td th:text="${#numbers.formatDecimal(booking.conditions.minimumGuarantee, 1, 'COMMA', 2, 'POINT')}+'€'"></td>
+
+                <td th:text="${#numbers.formatDecimal(booking.conditions.getPercentage(), 1, 'COMMA', 0, 'POINT')}+'%'"></td>
+                <td th:text="${#numbers.formatDecimal(booking.conditions.getFreight(), 1, 'COMMA', 2, 'POINT')}+'€'"></td>
+                <td th:text="${#numbers.formatDecimal(booking.conditions.getAdvertisement(), 1, 'COMMA', 2, 'POINT')}+'€'"></td>
+                <td th:text="${#numbers.formatDecimal(spio, 1, 'COMMA', 2, 'POINT')}+'€'"></td>
+                <td th:text="${#numbers.formatDecimal(booking.conditions.getOther(), 1, 'COMMA', 2, 'POINT')}+'€'"></td>
+                <td th:text="${#numbers.formatDecimal(MwSt, 1, 'COMMA', 2, 'POINT')}+'€'"></td> <!-- TODO: read MwSt from Config!-->
+                <td th:text="${#numbers.formatDecimal(sumInvoice, 1, 'COMMA', 2, 'POINT')}+'€'"></td>
+            </tr>
+        </table>
+    </div>
+    <p th:text="'Ich best&auml;tige die Vollst&auml;ndigkeit und Richtigkeit dieser Abrechnung.'">Ich best&auml;tige die Vollst&auml;ndigkeit und Richtigkeit dieser Abrechnung.</p>
+    <br/>
+    <br/>
+    <br/>
+    <p>Datum: _____________________________        Unterschrift: _______________________________</p>
+
+<script th:replace="template :: scripts"></script>
+</body>
+</html>
