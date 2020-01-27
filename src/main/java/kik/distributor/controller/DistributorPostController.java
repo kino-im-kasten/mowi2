@@ -49,7 +49,7 @@ public class DistributorPostController {
 		try {
 			distributorManagement.createDistributor(form);
 		} catch (DistributorManagement.DuplicateException e) {
-			return "alertDuplicate";
+			return "distributor/alertDuplicate";
 		}
 		return "redirect:/distributor";
 	}
