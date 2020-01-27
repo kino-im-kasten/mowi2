@@ -3,6 +3,7 @@ package kik.dutyplan;
 import javassist.tools.rmi.ObjectNotFoundException;
 import kik.booking.data.Booking;
 import kik.booking.data.BookingRepository;
+import kik.config.Configuration;
 import kik.dutyplan.data.dutyplan.DutyPlan;
 import kik.dutyplan.data.job.Job;
 import kik.dutyplan.data.job.JobForm;
@@ -28,33 +29,36 @@ private DutyPlanManagement management;
 private kik.event.management.movieEvent.MovieEventManagement movieEventManagement;
 private MovieEventInitializer movieEventInitializer;
 private BookingRepository bookingRepository;
+private Configuration configuration;
 
 	@Autowired
 	public DutyPlanManagementTest(DutyPlanManagement management,
-								  kik.event.management.movieEvent.MovieEventManagement movieEventManagement,
-								  MovieEventInitializer movieEventInitializer,
-								  BookingRepository bookingRepository) {
+								 kik.event.management.movieEvent.MovieEventManagement movieEventManagement,
+								 MovieEventInitializer movieEventInitializer,
+								 BookingRepository bookingRepository,
+								 Configuration configuration) {
 			this.management = management;
 			this.movieEventManagement = movieEventManagement;
 			this.movieEventInitializer = movieEventInitializer;
 			this.bookingRepository = bookingRepository;
+			this.configuration = configuration;
 	}
 
 
 	@Test
-	public void DutyPlanManagementTestP1() { //create Test
+	public void DutyPlanManagementCreateDutyPlanTestP1() { //create Test
 		Long dpId = management.createDutyPlan("TestPlan1");
 		DutyPlan dp1 = management.getDutyPlanById(dpId).get();
 		assertTrue(dp1.getId() != null);
 	}
 
 	@Test
-	public void DutyPlanManagementTestP2() { //init Test
+	public void DutyPlanManagementInitTestP2() { //init Test
 		Long dpId = management.createDutyPlan("test");
 		DutyPlan dp2 = management.getDutyPlanById(dpId).get();
-		assertTrue(dp2.contains("Vorführer"));
-		assertTrue(dp2.contains("Kasse"));
-		assertTrue(dp2.contains("Gastro"));
+		for (Configuration.ProtoJob j : configuration.getDefaultJobs()) {
+			assertTrue(dp2.contains(j.getName()));
+		}
 	}
 
 
