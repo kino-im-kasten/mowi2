@@ -202,6 +202,7 @@ vi src/main/resources/application.properties
 
 # to start Maven, use
 ./mvnw clean package -DskipTests
+#bei Fehler wegen fehlenden .mvn Order: mvn clean package -DskipTests
 
 # to execute the built jar
 nohup java -jar target/swt19w4-1.0.0.BUILD-SNAPSHOT.jar &
